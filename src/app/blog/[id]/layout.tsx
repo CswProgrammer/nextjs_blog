@@ -7,16 +7,7 @@ import BlogNav from "@/components/blognav";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Search,
-  Star,
-  Plus,
-  User,
-  Settings,
-  DollarSign,
-  LogOut,
-  Trash2,
-} from "lucide-react";
+import { Search, Star, User, Settings, LogOut, Trash2 } from "lucide-react";
 
 export default function Layout({
   params,
@@ -41,13 +32,6 @@ export default function Layout({
             <Button className="w-full justify-start px-2" variant="ghost">
               <Star className="h-4 w-4" />
               &nbsp;&nbsp;收藏夹
-            </Button>
-            <Button
-              className="w-full justify-start px-2 font-bold hover:bg-card"
-              variant="ghost"
-            >
-              <Plus className="h-4 w-4" />
-              &nbsp;&nbsp;创建文档
             </Button>
           </div>
           <Separator className="my-4" />

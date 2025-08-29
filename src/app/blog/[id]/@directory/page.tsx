@@ -1,18 +1,41 @@
 import { FileText } from "lucide-react";
+import CreateSubmitButton from "./createsubmitbutton";
+import { create, getDocList } from "./action";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 
-export default function Directory({ params }: { params: { id: string } }) {
+export default async function Directory({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const list = await getDocList();
+
   return (
-    <div className="h-[350px]">
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
-        <div
-          key={i}
-          className="inline-flex items-center w-full p-2 py-1 cursor-pointer hover:bg-card hover:text-secondary-foreground"
-        >
-          <FileText className="h-4 w-4" />
-          &nbsp;动物农场{i} {params.id}
-        </div>
-      ))}
-      <div className="m-2">（会支持层级嵌套）</div>
+    <div>
+      {list.map((doc) => {
+        const { uid, title } = doc;
+        let isCurrent = false;
+        if (uid === params.id) isCurrent = true;
+
+        return (
+          <Link
+            href={`/blog/${uid}`}
+            key={uid}
+            className={cn(
+              "inline-flex items-center w-full p-2 py-1 cursor-pointer hover:text-secondary-foreground",
+              isCurrent ? "bg-card" : "hover:bg-card",
+            )}
+          >
+            <FileText className="h-4 w-4" />
+            &nbsp;{title}
+          </Link>
+        );
+      })}
+
+      <form action={create}>
+        <CreateSubmitButton />
+      </form>
     </div>
   );
 }

@@ -17,6 +17,7 @@ datasource db {
 // 数据模型
 model DocBlog {
     id        Int      @id @default(autoincrement())
+    uid       String   @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     title      String
     content    String
     category   String
