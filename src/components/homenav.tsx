@@ -13,27 +13,24 @@ export default function HomeNav() {
         <div className="flex-none">
           <Logo />
         </div>
-
         {/* 三个按钮：深色背景也纯黑，hover 用深灰 */}
-        <div className="flex-1 flex">
-          {["Blog", "Project", "Me"].map((label, i) => (
+        {["Blog", "Project", "Me"].map((label, i) => {
+          const href = label === "Blog" ? "/blog/1" : `/${label.toLowerCase()}`;
+          return (
             <Button
               key={i}
               asChild
               variant="ghost"
-              className="
-                flex-1 text-lg font-bold
-                text-black dark:text-white
-                bg-white dark:bg-black
-                hover:bg-gray-100 dark:hover:bg-gray-900
-                rounded-none
-              "
+              className="flex-1 text-lg font-bold
+                 text-black dark:text-white
+                 bg-white dark:bg-black
+                 hover:bg-gray-100 dark:hover:bg-gray-900
+                 rounded-none"
             >
-              <Link href={`/${label.toLowerCase()}`}>{label}</Link>
+              <Link href={href}>{label}</Link>
             </Button>
-          ))}
-        </div>
-
+          );
+        })}
         {/* GitHub & 主题切换 */}
         <div className="flex-none flex items-center space-x-2">
           <ChangeTheme />

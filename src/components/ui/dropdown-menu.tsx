@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
-import { cn } from '@/lib/utils';
+import * as React from "react";
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+import { cn } from "@/lib/utils";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
@@ -19,14 +19,14 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-white dark:bg-black p-1 shadow-md',
-        className
+        "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-white dark:bg-black p-1 shadow-md",
+        className,
       )}
       {...props}
     />
   </DropdownMenuPrimitive.Portal>
 ));
-DropdownMenuContent.displayName = 'DropdownMenuContent';
+DropdownMenuContent.displayName = "DropdownMenuContent";
 
 const DropdownMenuItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
@@ -35,14 +35,14 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none',
-      'focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-black dark:focus:text-white',
-      className
+      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none",
+      "focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-black dark:focus:text-white",
+      className,
     )}
     {...props}
   />
 ));
-DropdownMenuItem.displayName = 'DropdownMenuItem';
+DropdownMenuItem.displayName = "DropdownMenuItem";
 
 export {
   DropdownMenu,

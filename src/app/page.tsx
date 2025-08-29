@@ -9,7 +9,7 @@ export default function Home() {
     <main className="min-h-screen flex flex-col justify-center text-center">
       <HomeNav />
       <h2 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
-        <span className="font-extrabold">AI编程 高效工作！</span>
+        <span className="font-extrabold">前后端运维 统统都干</span>
       </h2>
       <Slogan />
       <section className="mt-10 flex justify-center space-x-4">
