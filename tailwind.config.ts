@@ -89,6 +89,11 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  variants: {
+    extend: {
+      display: ["group-hover"],
+    },
+  },
 } satisfies Config;
 
 export default config;

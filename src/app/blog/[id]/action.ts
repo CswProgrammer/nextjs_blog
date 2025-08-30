@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/db/db";
+import { getDocList } from "./@directory/action";
+import { redirect } from "next/navigation";
 
 export async function getDoc(uid: string) {
   try {
@@ -24,11 +26,23 @@ export async function updateDoc(
       data,
     });
 
-    if (data.title) {
-      // 修改 title 时，重新生成页面
-      revalidatePath(`/blog/${uid}`);
-    }
+    revalidatePath(`/blog/${uid}`);
   } catch (ex) {
     console.error(ex);
   }
+}
+
+export async function del(uid: string) {
+  // 删除
+  await db.docBlog.delete({
+    where: {
+      uid,
+    },
+  });
+
+  const list = await getDocList();
+  const uidList = list.map((doc) => doc.uid);
+  const otherUid = uidList.find((id) => id !== uid);
+
+  redirect(`/blog/${otherUid}`); // 删除以后，定位到其他文档
 }
