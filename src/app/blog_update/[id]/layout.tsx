@@ -7,8 +7,10 @@ import BlogNav from "@/components/blognav";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search, Star, User, Settings, LogOut, Trash2 } from "lucide-react";
+import { Search, Star, LogOut, Trash2, Users } from "lucide-react";
+import UserSettingButton from "@/components/user-setting-button";
 import SignOutButton from "@/components/sign-out-button";
+import { getUserInfo } from "@/lib/session";
 
 export default function Layout({
   params,
@@ -26,6 +28,7 @@ export default function Layout({
       <ResizablePanel defaultSize={20}>
         <div className="flex flex-col h-screen bg-muted text-muted-foreground p-2">
           <div>
+            <UserSettingButton />
             <Button className="w-full justify-start px-2" variant="ghost">
               <Search className="h-4 w-4" />
               &nbsp;&nbsp;搜索
@@ -41,16 +44,8 @@ export default function Layout({
 
           <div className="flex-shrink-0">
             <Button className="w-full justify-start px-2" variant="ghost">
-              <Trash2 className="h-4 w-4" /> 回收站
-            </Button>
-            <Button className="w-full justify-start px-2 " variant="ghost">
-              <User className="h-4 w-4" /> 我的账户
-            </Button>
-            {/* <Button className="w-full justify-start px-2 " variant="ghost">
-              <DollarSign className="h-4 w-4" /> 升级 VIP
-            </Button> */}
-            <Button className="w-full justify-start px-2 " variant="ghost">
-              <Settings className="h-4 w-4" /> 设置
+              <Trash2 className="h-4 w-4" />
+              &nbsp;&nbsp;回收站
             </Button>
 
             <SignOutButton className="w-full justify-start px-2 ">
