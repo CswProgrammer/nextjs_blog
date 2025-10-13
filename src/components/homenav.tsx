@@ -15,7 +15,10 @@ export default function HomeNav() {
         </div>
         {/* 三个按钮：深色背景也纯黑，hover 用深灰 */}
         {["Blog", "Project", "Me"].map((label, i) => {
-          const href = label === "Blog" ? "/blog/1" : `/${label.toLowerCase()}`;
+          const href =
+            label === "Blog"
+              ? "/blogs/cf162e77-709d-40ff-97c0-eb9651b147db"
+              : `/${label.toLowerCase()}`;
           return (
             <Button
               key={i}

@@ -26,7 +26,7 @@ export async function updateDoc(
       data,
     });
 
-    revalidatePath(`/blog/${uid}`);
+    revalidatePath(`/blog_update/${uid}`);
   } catch (ex) {
     console.error(ex);
   }
@@ -44,5 +44,5 @@ export async function del(uid: string) {
   const uidList = list.map((doc) => doc.uid);
   const otherUid = uidList.find((id) => id !== uid);
 
-  redirect(`/blog/${otherUid}`); // 删除以后，定位到其他文档
+  redirect(`/blog_update/${otherUid}`); // 删除以后，定位到其他文档
 }

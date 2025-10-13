@@ -1,0 +1,27 @@
+"use client";
+
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+
+export default function Title(props: { uid: string; title: string }) {
+  const [title, setTitle] = useState(props.title || "");
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+  }
+
+  return (
+    <div className="mb-8">
+      <Input
+        readOnly
+        placeholder="请输入内容..."
+        value={title}
+        onChange={handleChange}
+        className="border-none p-0 text-4xl font-bold focus-visible:ring-transparent"
+        style={{ height: "100%" }}
+      />
+      {/* 可能还会再增加其他功能，例如设置 Icon 、背景等 */}
+    </div>
+  );
+}

@@ -28,7 +28,7 @@ export default function Item(props: IProps) {
         isCurrent ? "bg-card" : "hover:bg-card",
       )}
     >
-      <Link href={`/work/${uid}`} className="inline-flex items-center">
+      <Link href={`/blog_update/${uid}`} className="inline-flex items-center">
         <FileText className="h-4 w-4" />
         &nbsp;{title || "<无标题>"}
       </Link>

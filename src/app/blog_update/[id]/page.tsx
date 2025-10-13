@@ -1,6 +1,4 @@
-// src/app/blog/page.tsx
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { db } from "@/db/db";
 import Content from "./content";
 import { getDoc } from "./action";
 import Title from "./title";

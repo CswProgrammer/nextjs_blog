@@ -3,11 +3,6 @@
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import debounce from "lodash.debounce";
-import { updateDoc } from "./action";
-
-const saveContent = debounce((uid: string, content: string) => {
-  updateDoc(uid, { content });
-}, 1000);
 
 export default function Content(props: { uid: string; content: string }) {
   const [content, setContent] = useState(props.content || "");
@@ -15,17 +10,14 @@ export default function Content(props: { uid: string; content: string }) {
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     const newContent = e.target.value;
     setContent(newContent);
-    saveContent(props.uid, newContent);
   }
 
   return (
-    <div>
-      <Textarea
-        placeholder="请输入标题..."
-        value={content}
-        onChange={handleChange}
-        className="border-none p-0 text-base focus-visible:ring-transparent"
-      />
-    </div>
+    <Textarea
+      readOnly
+      value={content}
+      className="border-none p-0 text-base focus-visible:ring-transparent resize-none bg-transparent"
+      style={{ width: "100%", height: "600px" }}
+    />
   );
 }

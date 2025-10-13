@@ -11,7 +11,7 @@ export async function create() {
       category: "",
     },
   });
-  redirect(`/blog/${newDoc.uid}`);
+  redirect(`/blog_update/${newDoc.uid}`);
 }
 
 export async function getDocList() {
@@ -40,5 +40,5 @@ export async function del(uid: string) {
   const uidList = list.map((doc) => doc.uid);
   const otherUid = uidList.find((id) => id !== uid);
 
-  redirect(`/blog/${otherUid}`); // 删除以后，定位到其他文档
+  redirect(`/blog_update/${otherUid}`); // 删除以后，定位到其他文档
 }
