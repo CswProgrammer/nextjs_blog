@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Search, Star, User, Settings, LogOut, Trash2 } from "lucide-react";
+import SignOutButton from "@/components/sign-out-button";
 
 export default function Layout({
   params,
@@ -51,9 +52,17 @@ export default function Layout({
             <Button className="w-full justify-start px-2 " variant="ghost">
               <Settings className="h-4 w-4" /> 设置
             </Button>
-            <Button className="w-full justify-start px-2 " variant="ghost">
-              <LogOut className="h-4 w-4" /> 退出登录
-            </Button>
+
+            <SignOutButton className="w-full justify-start px-2 ">
+              <LogOut className="h-4 w-4" />
+              &nbsp;&nbsp;退出登录
+            </SignOutButton>
+            {/* <SignOutButton className="w-full justify-start px-2" size="sm">
+              <>
+                <LogOut className="h-4 w-4" />
+                &nbsp;退出登录
+              </>
+            </SignOutButton> */}
           </div>
         </div>
       </ResizablePanel>

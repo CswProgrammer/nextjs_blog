@@ -1,4 +1,7 @@
 import NextAuth from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { type Adapter } from "next-auth/adapters";
+import { db } from "@/db/db";
 
 // import Apple from "next-auth/providers/apple"
 // import Atlassian from "next-auth/providers/atlassian"
@@ -69,6 +72,8 @@ export const config = {
   theme: {
     logo: "https://next-auth.js.org/img/logo/logo-sm.png",
   },
+  adapter: PrismaAdapter(db) as Adapter,
+
   providers: [
     // Apple,
     // Atlassian,
@@ -136,8 +141,8 @@ export const config = {
   basePath: "/auth",
   callbacks: {
     authorized({ request, auth }) {
-      const { pathname } = request.nextUrl;
-      if (pathname.startsWith("/blog_update/")) return !!auth;
+      // const { pathname } = request.nextUrl;
+      // if (pathname.startsWith('/blog_update/')) return !!auth;
       return true;
     },
     jwt({ token, trigger, session }) {

@@ -1,11 +1,13 @@
 // import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Code, Zap } from "lucide-react";
+import { Code } from "lucide-react";
+
 import HomeNav from "@/components/homenav";
 import Slogan from "@/components/slogan";
 import Link from "next/link";
+import StartButton from "./start-btn";
 
-export default function Home() {
+export default async function Home() {
   return (
     <main className="min-h-screen flex flex-col justify-center text-center">
       <HomeNav />
@@ -14,12 +16,7 @@ export default function Home() {
       </h2>
       <Slogan />
       <section className="mt-10 flex justify-center space-x-4">
-        <Link href="/blog_update/1" passHref legacyBehavior>
-          <Button className="text-base rounded-full h-12 px-6" size="lg">
-            <Zap className="h-4 w-4" />
-            &nbsp;向我提问
-          </Button>
-        </Link>
+        <StartButton />
 
         <Button
           variant="secondary"
