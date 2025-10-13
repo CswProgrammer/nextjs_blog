@@ -26,10 +26,10 @@ export default function SignOutButton({
     if (!c) return;
 
     try {
-      await post("/api/user/sign-out", {});
+      await post("/api/user/sign-out", {}); //后端登出
     } catch (e) {}
     console.log("sign out");
-    location.href = "/";
+    location.href = "/"; //前端登出跳转主页
   }
   return (
     <div className="w-full">
