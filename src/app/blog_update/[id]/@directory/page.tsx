@@ -4,25 +4,30 @@ import { create, getDocList } from "./action";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Item from "./item";
+import { auth } from "auth";
 
 export default async function Directory({
   params,
 }: {
   params: { id: string };
 }) {
+  const session = await auth();
+  const userId = session?.user?.id ?? "system"; // 兜底系统用户
+
   const list = await getDocList();
 
   return (
     <div>
       {list.map((doc) => {
-        const { uid, title } = doc;
+        const { id, title } = doc;
         let isCurrent = false;
-        if (uid === params.id) isCurrent = true;
+        if (id === params.id) isCurrent = true;
 
-        return <Item key={uid} uid={uid} title={title} isCurrent={isCurrent} />;
+        return <Item key={id} id={id} title={title} isCurrent={isCurrent} />;
       })}
 
       <form action={create}>
+        <input type="hidden" name="userId" value={userId} />
         <CreateSubmitButton />
       </form>
     </div>

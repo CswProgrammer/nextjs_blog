@@ -5,13 +5,13 @@ import { FileText, Ellipsis, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface IProps {
-  uid: string;
+  id: string;
   title: string;
   isCurrent: boolean;
 }
 
 export default function Item(props: IProps) {
-  const { uid, title, isCurrent } = props;
+  const { id, title, isCurrent } = props;
 
   return (
     <div
@@ -20,7 +20,7 @@ export default function Item(props: IProps) {
         isCurrent ? "bg-card" : "hover:bg-card",
       )}
     >
-      <Link href={`/blogs/${uid}`} className="inline-flex items-center">
+      <Link href={`/blogs/${id}`} className="inline-flex items-center">
         <FileText className="h-4 w-4" />
         &nbsp;{title || "<无标题>"}
       </Link>

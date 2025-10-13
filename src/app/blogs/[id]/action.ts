@@ -8,7 +8,6 @@ export async function getDocList() {
   const list = db.docBlog.findMany({
     select: {
       id: true,
-      uid: true,
       title: true,
     },
     orderBy: {
@@ -18,10 +17,10 @@ export async function getDocList() {
   return list || [];
 }
 
-export async function getDoc(uid: string) {
+export async function getDoc(id: string) {
   try {
     const doc = await db.docBlog.findUnique({
-      where: { uid },
+      where: { id },
     });
     return doc;
   } catch (ex) {

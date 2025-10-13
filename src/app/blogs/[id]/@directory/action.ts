@@ -7,7 +7,6 @@ export async function getDocList() {
   const list = db.docBlog.findMany({
     select: {
       id: true,
-      uid: true,
       title: true,
     },
     orderBy: {
