@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "./editor.css";
+@import './editor.css';
 
 @layer base {
   :root {
@@ -74,4 +74,9 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.tiptap .mark {
+  padding: 0.1em 0.2em;
+  border-radius: 0.2em;
 }

@@ -1,13 +1,8 @@
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
-import Underline from "@tiptap/extension-underline";
-import TextAlign from "@tiptap/extension-text-align";
-import SubScript from "@tiptap/extension-subscript";
-import Superscript from "@tiptap/extension-superscript";
 import TextMenu from "./menus/text-menu";
+import { extensions } from "./extensions";
 
 interface IProps {
   rawContent: string;
@@ -27,26 +22,7 @@ const TiptapEditor = (props: IProps) => {
   const { rawContent, handleUpdate } = props;
 
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
-      SubScript,
-      Superscript,
-      Placeholder.configure({
-        placeholder: "请输入内容…",
-        // Use different placeholders depending on the node type:
-        // placeholder: ({ node }) => {
-        //   if (node.type.name === 'heading') {
-        //     return 'What’s the title?'
-        //   }
-
-        //   return 'Can you add some further context?'
-        // },
-      }),
-    ],
+    extensions,
     content: gen_content(rawContent),
     onUpdate: ({ editor }) => {
       const data = editor.getJSON();
