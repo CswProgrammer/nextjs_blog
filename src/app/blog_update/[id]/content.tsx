@@ -10,13 +10,11 @@ const saveContent = debounce((id: string, content: string) => {
 }, 1000);
 
 export default function Content(props: { id: string; content: string }) {
-  const [content, setContent] = useState(props.content || "");
+  const { id, content = "" } = props;
 
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const newContent = e.target.value;
-    setContent(newContent);
-    saveContent(props.id, newContent);
+  function handleUpdate(content: string) {
+    saveContent(id, content);
   }
 
-  return <TiptapEditor />;
+  return <TiptapEditor rawContent={content} handleUpdate={handleUpdate} />;
 }
