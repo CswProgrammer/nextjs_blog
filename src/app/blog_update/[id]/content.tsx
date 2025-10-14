@@ -1,9 +1,9 @@
 "use client";
 
-import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import debounce from "lodash.debounce";
 import { updateDoc } from "./action";
+import TiptapEditor from "@/components/editor";
 
 const saveContent = debounce((id: string, content: string) => {
   updateDoc(id, { content });
@@ -18,15 +18,5 @@ export default function Content(props: { id: string; content: string }) {
     saveContent(props.id, newContent);
   }
 
-  return (
-    <div>
-      <Textarea
-        placeholder="请输入标题..."
-        value={content}
-        onChange={handleChange}
-        className="border-none p-0 text-base focus-visible:ring-transparent"
-        style={{ width: "100%", height: "600px" }}
-      />
-    </div>
-  );
+  return <TiptapEditor />;
 }
