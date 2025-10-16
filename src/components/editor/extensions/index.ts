@@ -5,6 +5,9 @@ import TextAlign from "@tiptap/extension-text-align";
 import SubScript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 import Highlight from "@tiptap/extension-highlight";
+import { TaskItem } from "@tiptap/extension-task-item";
+import { TaskList } from "@tiptap/extension-task-list";
+import { SlashCommands } from "./slash-commands";
 
 export const extensions = [
   StarterKit,
@@ -15,8 +18,11 @@ export const extensions = [
   SubScript,
   Superscript,
   Highlight.configure({ multicolor: true }),
+  TaskList,
+  TaskItem.configure({
+    nested: true,
+  }),
   Placeholder.configure({
-    placeholder: "请输入内容…",
     // Use different placeholders depending on the node type:
     // placeholder: ({ node }) => {
     //   if (node.type.name === 'heading') {
@@ -25,5 +31,7 @@ export const extensions = [
 
     //   return 'Can you add some further context?'
     // },
+    placeholder: "输入 / 设置格式",
   }),
+  SlashCommands,
 ];

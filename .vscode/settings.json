@@ -5,6 +5,10 @@
     "nextjs_blog",
     "lucide",
     "shadcn",
-    "Tiptap"
-  ]
+    "Tiptap",
+    "Pilcrow"
+  ],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
 }

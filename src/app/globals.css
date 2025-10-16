@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import './editor.css';
+@import "./editor.css";
 
 @layer base {
   :root {

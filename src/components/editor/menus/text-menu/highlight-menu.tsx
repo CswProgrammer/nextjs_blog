@@ -41,6 +41,20 @@ function ColorPanel(props: IProps) {
     { name: "蓝色", color: "#74c0fc" },
     { name: "紫色", color: "#b197fc" },
     { name: "红色", color: "red" },
+    // 莫兰迪低饱和
+    { name: "鼠尾草绿", color: "#b8c5a6" },
+
+    // 中性高级灰
+    { name: "石墨灰", color: "#5a5a5a" },
+
+    // 低饱和彩色
+    { name: "薄荷绿", color: "#a8d5ba" },
+    { name: "樱花粉", color: "#f8c6d7" },
+    { name: "天空蓝", color: "#a3c1d9" },
+    { name: "香槟金", color: "#d4af37" },
+    { name: "薰衣草紫", color: "#b19cd9" },
+    { name: "柠檬黄", color: "#fff79a" },
+    { name: "经典蓝", color: "#c5f6fa" },
   ];
   const ItemClassName = "block px-3 py-1 m-1";
 

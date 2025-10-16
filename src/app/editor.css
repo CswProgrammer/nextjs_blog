@@ -1,3 +1,50 @@
-.ProseMirror:focus {
-  outline: none;
+.tiptap p.is-empty::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap ul[data-type='taskList'] {
+  @apply list-none p-0;
+
+  p {
+    @apply m-0;
+  }
+
+  li {
+    @apply flex;
+
+    > label {
+      @apply grow-0 shrink-0 flex-auto mt-0 mr-2 select-none;
+    }
+
+    > div {
+      @apply flex-auto mb-0;
+    }
+
+    &[data-checked='true'] {
+      @apply line-through;
+    }
+  }
+}
+
+.ProseMirror h1 {
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.ProseMirror h3 {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.ProseMirror p {
+  font-size: 1em;
 }

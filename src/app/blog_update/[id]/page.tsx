@@ -17,12 +17,10 @@ export default async function BlogWork({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <ScrollArea className="h-[calc(100vh-46px)]">
-        <div className="max-w-[900px] mx-auto my-10">
-          <Title id={id} title={doc.title} />
-          <Content id={id} content={doc.content} />
-        </div>
-      </ScrollArea>
+      <div className="max-w-[900px] mx-auto my-10">
+        <Title id={id} title={doc.title} />
+        <Content id={id} content={doc.content} />
+      </div>
     </>
   );
 }
