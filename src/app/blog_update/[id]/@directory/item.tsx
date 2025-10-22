@@ -50,19 +50,26 @@ export default function Item(props: IProps) {
   return (
     <div
       className={cn(
-        "flex justify-between w-full p-2 cursor-pointer hover:text-secondary-foreground group",
+        "flex justify-between w-full hover:text-secondary-foreground group",
         isCurrent ? "bg-card" : "hover:bg-card",
       )}
     >
-      <Link href={`/blog_update/${id}`} className="inline-flex items-center">
-        <FileText className="h-4 w-4 mr-1" />
-        <span ref={titleSpanRef}>{getTitle(id, title)}</span>
+      <Link
+        href={`/blog_update/${id}`}
+        className="flex-auto overflow-hidden p-2 flex items-center"
+      >
+        <div className="w-4 mr-1">
+          <FileText className="h-4 w-4" />
+        </div>
+        <span ref={titleSpanRef} className="truncate flex-auto">
+          {getTitle(id, title)}
+        </span>
       </Link>
 
-      <div className="inline-flex items-center invisible group-hover:visible">
+      <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Ellipsis className="h-4 w-4" />
+            <Ellipsis className="h-4 w-4 cursor-pointer" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem

@@ -39,7 +39,7 @@ export default function Layout({
             </Button>
           </div>
           <Separator className="my-4" />
-          <ScrollArea className="flex-auto">{directory}</ScrollArea>
+          <div className="flex-auto overflow-y-auto">{directory}</div>
           <Separator className="my-4" />
 
           <div className="flex-shrink-0">

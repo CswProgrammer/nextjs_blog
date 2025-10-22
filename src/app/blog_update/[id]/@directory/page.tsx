@@ -17,7 +17,7 @@ export default async function Directory({
   const list = await getDocList();
 
   return (
-    <div>
+    <>
       {list.map((doc) => {
         const { id, title } = doc;
         let isCurrent = false;
@@ -30,6 +30,6 @@ export default async function Directory({
         <input type="hidden" name="userId" value={userId} />
         <CreateSubmitButton />
       </form>
-    </div>
+    </>
   );
 }
