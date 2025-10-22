@@ -8,9 +8,16 @@ import Highlight from "@tiptap/extension-highlight";
 import { TaskItem } from "@tiptap/extension-task-item";
 import { TaskList } from "@tiptap/extension-task-list";
 import { SlashCommands } from "./slash-commands";
+import { Columns, Column } from "./column";
+import Document from "./document";
 
 export const extensions = [
-  StarterKit,
+  Document,
+  Columns,
+  Column,
+  StarterKit.configure({
+    document: false,
+  }),
   Underline,
   TextAlign.configure({
     types: ["heading", "paragraph"],
@@ -23,14 +30,6 @@ export const extensions = [
     nested: true,
   }),
   Placeholder.configure({
-    // Use different placeholders depending on the node type:
-    // placeholder: ({ node }) => {
-    //   if (node.type.name === 'heading') {
-    //     return 'What’s the title?'
-    //   }
-
-    //   return 'Can you add some further context?'
-    // },
     placeholder: "输入 / 设置格式",
   }),
   SlashCommands,

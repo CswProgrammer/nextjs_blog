@@ -16,7 +16,14 @@ export const SlashCommands = Extension.create({
 
   // event: the editor is ready.
   onCreate() {
+    // 创建隐藏的占位元素作为tippy的挂载点
+    const container = document.createElement("div");
+    container.style.display = "none";
+    document.body.appendChild(container);
+
     popup = tippy("body", {
+      content: " ", // 初始内容
+
       interactive: true,
       trigger: "manual",
       placement: "bottom-start",
