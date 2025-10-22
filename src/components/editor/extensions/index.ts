@@ -11,6 +11,7 @@ import { SlashCommands } from "./slash-commands";
 import { Columns, Column } from "./column";
 import Document from "./document";
 import Link from "@tiptap/extension-link";
+import ImageBlock from "./image-block";
 
 export const extensions = [
   Document,
@@ -34,6 +35,7 @@ export const extensions = [
   Link.configure({
     openOnClick: false,
   }),
+  ImageBlock,
   Placeholder.configure({
     placeholder: "输入 / 设置格式",
   }),

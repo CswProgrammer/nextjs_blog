@@ -20,7 +20,8 @@ export default function TextMenu(props: IProps) {
   if (editor == null) return;
   function shouldShow(editor: Editor) {
     // 某些类型，不显示文本菜单
-    if (editor?.isActive("codeBlock")) return false;
+    const customTypes = ["codeBlock", "imageBlock", "horizontalRule", "link"];
+    if (customTypes.some((type) => editor.isActive(type))) return false;
 
     // 其他，看是否选中了文本
     return isTextSelected({ editor });

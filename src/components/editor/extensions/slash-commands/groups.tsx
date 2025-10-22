@@ -10,6 +10,7 @@ import {
   SquareCode,
   Minus,
   Columns2,
+  Image,
 } from "lucide-react";
 import { Group } from "./types";
 
@@ -117,6 +118,25 @@ export const GROUPS: Group[] = [
             .focus()
             .setColumns()
             .focus(editor.state.selection.head - 1)
+            .run();
+        },
+      },
+      {
+        name: "image",
+        label: "Image 图片",
+        Icon: Image,
+        description: "Insert an image",
+        aliases: ["img"],
+        action: (editor) => {
+          const defaultUrl = "https://source.unsplash.com/8xznAGy4HcY/600x300";
+          const url = window.prompt("Image URL");
+
+          editor
+            .chain()
+            .focus()
+            .setImageBlock({
+              src: url || defaultUrl,
+            })
             .run();
         },
       },
