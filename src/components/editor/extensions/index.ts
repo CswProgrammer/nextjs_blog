@@ -16,6 +16,7 @@ import Link from "@tiptap/extension-link";
 import ImageBlock from "./image-block";
 import { ImageUpload } from "./image-upload";
 import { uploadImageAPI } from "@/components/editor/utils/api";
+import { Table, TableCell, TableRow, TableHeader } from "./table/index";
 
 export const extensions = [
   Document,
@@ -67,6 +68,10 @@ export const extensions = [
     },
   }),
 
+  Table,
+  TableCell,
+  TableRow,
+  TableHeader,
   Placeholder.configure({
     placeholder: "输入 / 设置格式",
   }),

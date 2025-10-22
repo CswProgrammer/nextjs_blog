@@ -7,13 +7,9 @@ import { getRenderContainer } from "@/components/editor/utils/getRenderContainer
 import { ColumnLayout } from "@/components/editor/extensions/column/columns";
 import { Button } from "@/components/ui/button";
 import Wrapper from "../bubble-menu-wrapper";
+import { MenuProps } from "../types";
 
-interface IProps {
-  editor: Editor | null;
-  appendTo: React.RefObject<any>;
-}
-
-export default function ColumnsMenu(props: IProps) {
+export default function ColumnsMenu(props: MenuProps) {
   const { editor, appendTo } = props;
 
   // 计算菜单的定位

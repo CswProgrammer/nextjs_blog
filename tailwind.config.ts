@@ -114,6 +114,10 @@ const config = {
               "margin-top": "0.6em",
               "margin-bottom": "0.6em",
             },
+            table: {
+              "margin-top": "1em",
+              "margin-bottom": "1em",
+            },
           },
         },
       },

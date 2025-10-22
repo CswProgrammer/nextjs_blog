@@ -11,6 +11,7 @@ import {
   Minus,
   Columns2,
   Image,
+  Table,
 } from "lucide-react";
 import { Group } from "./types";
 
@@ -105,6 +106,20 @@ export const GROUPS: Group[] = [
     title: "插入",
     commands: [
       // TODO: table image
+      {
+        name: "table",
+        label: "Table 表格",
+        Icon: Table,
+        description: "Insert a table",
+        shouldBeHidden: (editor) => editor.isActive("columns"),
+        action: (editor) => {
+          editor
+            .chain()
+            .focus()
+            .insertTable({ rows: 3, cols: 3, withHeaderRow: false })
+            .run();
+        },
+      },
       {
         name: "columns",
         label: "Columns 多列",
