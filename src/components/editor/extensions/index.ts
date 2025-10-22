@@ -7,11 +7,14 @@ import Superscript from "@tiptap/extension-superscript";
 import Highlight from "@tiptap/extension-highlight";
 import { TaskItem } from "@tiptap/extension-task-item";
 import { TaskList } from "@tiptap/extension-task-list";
+import { FileHandler } from "@tiptap-pro/extension-file-handler";
 import { SlashCommands } from "./slash-commands";
 import { Columns, Column } from "./column";
 import Document from "./document";
 import Link from "@tiptap/extension-link";
 import ImageBlock from "./image-block";
+import { ImageUpload } from "./image-upload";
+import { uploadImageAPI } from "@/components/editor/utils/api";
 
 export const extensions = [
   Document,
@@ -36,6 +39,32 @@ export const extensions = [
     openOnClick: false,
   }),
   ImageBlock,
+  ImageUpload,
+  FileHandler.configure({
+    allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
+    onDrop: (currentEditor, files, pos) => {
+      files.forEach(async () => {
+        const url = await uploadImageAPI();
+
+        currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run();
+      });
+    },
+    onPaste: (currentEditor, files) => {
+      files.forEach(async () => {
+        const url = await uploadImageAPI();
+
+        return currentEditor
+          .chain()
+          .setImageBlockAt({
+            pos: currentEditor.state.selection.anchor,
+            src: url,
+          })
+          .focus()
+          .run();
+      });
+    },
+  }),
+
   Placeholder.configure({
     placeholder: "输入 / 设置格式",
   }),
