@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { del } from "./action";
 import emitter from "@/lib/emitter";
+import scrollIntoView from "scroll-into-view-if-needed";
 
 // 存储修改过的标题的
 const changedTitleObj: { [key: string]: string } = {}; // { id, changedTitle }
@@ -34,6 +35,7 @@ interface IProps {
 export default function Item(props: IProps) {
   const { id, title, isCurrent } = props;
   const titleSpanRef = useRef<HTMLSpanElement>(null);
+  const titleContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // 修改标题时触发事件
@@ -47,8 +49,20 @@ export default function Item(props: IProps) {
     });
   }, [id]);
 
+  // 滚动到当前标题
+  useEffect(() => {
+    if (!isCurrent) return;
+    if (titleContainerRef.current == null) return;
+    scrollIntoView(titleContainerRef.current!, {
+      scrollMode: "if-needed",
+      behavior: "smooth",
+      block: "center",
+    });
+  }, [isCurrent]);
+
   return (
     <div
+      ref={titleContainerRef}
       className={cn(
         "flex justify-between w-full hover:text-secondary-foreground group",
         isCurrent ? "bg-card" : "hover:bg-card",
