@@ -1,3 +1,7 @@
+.tiptap > * {
+  @apply mx-10;
+}
+
 .tiptap {
   p.is-empty::before {
     color: #adb5bd;

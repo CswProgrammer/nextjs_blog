@@ -9,6 +9,7 @@ import { TaskItem } from "@tiptap/extension-task-item";
 import { TaskList } from "@tiptap/extension-task-list";
 import { FileHandler } from "@tiptap-pro/extension-file-handler";
 import { SlashCommands } from "./slash-commands";
+import { Dropcursor } from "@tiptap/extension-dropcursor";
 import { Columns, Column } from "./column";
 import Document from "./document";
 import Link from "@tiptap/extension-link";
@@ -23,6 +24,7 @@ export const extensions = [
   // 使用 StarterKit，但禁用默认的 Document 扩展，从而使用自定义的 Document 扩展
   StarterKit.configure({
     document: false,
+    dropcursor: false,
   }),
   Underline,
   TextAlign.configure({
@@ -69,4 +71,8 @@ export const extensions = [
     placeholder: "输入 / 设置格式",
   }),
   SlashCommands,
+  Dropcursor.configure({
+    width: 2,
+    class: "ProseMirror-dropcursor border-black",
+  }),
 ];
