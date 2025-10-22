@@ -6,6 +6,7 @@ import { Columns2, PanelLeft, PanelRight, Trash2 } from "lucide-react";
 import { getRenderContainer } from "@/components/editor/utils/getRenderContainer";
 import { ColumnLayout } from "@/components/editor/extensions/column/columns";
 import { Button } from "@/components/ui/button";
+import Wrapper from "../bubble-menu-wrapper";
 
 interface IProps {
   editor: Editor | null;
@@ -93,13 +94,7 @@ export default function ColumnsMenu(props: IProps) {
         sticky: "popper",
       }}
     >
-      <div
-        className="
-          border rounded p-1 shadow
-          bg-background dark:bg-background-dark dark:border-gray-800 dark:shadow-lg 
-          inline-flex space-x-1
-        "
-      >
+      <Wrapper>
         <Button
           size="sm"
           onClick={onColumnLeft}
@@ -128,7 +123,7 @@ export default function ColumnsMenu(props: IProps) {
         >
           <Trash2 className="h-4 w-4" />
         </Button>
-      </div>
+      </Wrapper>
     </BubbleMenu>
   );
 }

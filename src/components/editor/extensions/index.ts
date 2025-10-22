@@ -10,11 +10,13 @@ import { TaskList } from "@tiptap/extension-task-list";
 import { SlashCommands } from "./slash-commands";
 import { Columns, Column } from "./column";
 import Document from "./document";
+import Link from "@tiptap/extension-link";
 
 export const extensions = [
   Document,
   Columns,
   Column,
+  // 使用 StarterKit，但禁用默认的 Document 扩展，从而使用自定义的 Document 扩展
   StarterKit.configure({
     document: false,
   }),
@@ -28,6 +30,9 @@ export const extensions = [
   TaskList,
   TaskItem.configure({
     nested: true,
+  }),
+  Link.configure({
+    openOnClick: false,
   }),
   Placeholder.configure({
     placeholder: "输入 / 设置格式",
