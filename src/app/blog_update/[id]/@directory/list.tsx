@@ -1,47 +1,63 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { v4 as uuid } from "uuid";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Item from "./item";
 import { useToast } from "@/components/ui/use-toast";
 import emitter from "@/lib/emitter";
+import { nav } from "./util";
+import { IDoc } from "./type";
+import { EVENT_KEY_NAV_DOC } from "@/constants";
 
 interface ListProps {
   defaultParamId: string;
-  list: Array<{ id: string; title: string; parentId: string | null }>;
+  defaultList: IDoc[];
 }
 
-export default function List({ defaultParamId, list }: ListProps) {
-  const router = useRouter();
+export default function List({ defaultParamId, defaultList }: ListProps) {
   const { toast } = useToast();
   const [paramId, setParamId] = useState(defaultParamId);
   useEffect(() => {
-    const eventKey = "NAV_DOC";
     function handler(payload: any) {
       const { id } = payload || {};
       if (!id) return;
       setParamId(id);
     }
-    emitter.on(eventKey, handler);
+    emitter.on(EVENT_KEY_NAV_DOC, handler);
+
     return () => {
-      emitter.off(eventKey, handler); // 及时清理自定义事件
+      emitter.off(EVENT_KEY_NAV_DOC, handler); // 及时清理自定义事件
     };
   });
 
-  function createDoc() {
-    const id = uuid();
-    const data = { id };
+  const [list, setList] = useState(defaultList);
 
-    // 创建
+  // 创建文档
+  function createDoc(parentId: string | null = null) {
+    const newId = uuid();
+
+    // 更新列表
+    setList([
+      ...list,
+      {
+        id: newId,
+        title: "",
+        parentId,
+      },
+    ]);
+
+    // 跳转
+    nav(newId, "create");
+
+    // 异步创建
     fetch("/api/doc", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ id: newId, parentId }),
     })
       .then((res) => res.json())
       .then((resData) => {
@@ -53,9 +69,6 @@ export default function List({ defaultParamId, list }: ListProps) {
           return;
         }
       });
-
-    // 直接跳转 不用等后端创建完成
-    router.push(`/blog_update/${id}`);
   }
 
   return (
@@ -73,6 +86,7 @@ export default function List({ defaultParamId, list }: ListProps) {
               defaultTitle={title}
               paramId={paramId}
               list={list}
+              onCreateDoc={createDoc}
             />
           );
         })}
@@ -81,7 +95,7 @@ export default function List({ defaultParamId, list }: ListProps) {
       <Button
         className="w-full justify-start px-0.5 font-bold"
         variant="ghost"
-        onClick={createDoc}
+        onClick={() => createDoc()}
       >
         <Plus className="h-4 w-4 mr-1" />
         创建文档

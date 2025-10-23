@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import TiptapEditor from "@/components/editor";
 import { getDoc, updateContent, updateTitle } from "./client-action";
 import emitter from "@/lib/emitter";
+import { EVENT_KEY_CHANGE_DOC_TITLE, EVENT_KEY_NAV_DOC } from "@/constants";
 
 interface IProps {
   defaultId: string;
@@ -32,9 +33,7 @@ export default function Content(props: IProps) {
     updateTitle(id, newTitle);
 
     // 触发事件，以更新左侧列表的文章标题
-    const key = `CHANGE_DOC_TITLE`;
-
-    emitter.emit(key, newTitle);
+    emitter.emit(EVENT_KEY_CHANGE_DOC_TITLE, newTitle);
   }
 
   // 编辑器内容
@@ -45,12 +44,23 @@ export default function Content(props: IProps) {
 
   // 获取文章内容
   useEffect(() => {
-    const eventKey = "NAV_DOC";
     function load(payload: any) {
-      const { id } = payload || {};
+      const { id, type } = payload || {};
       if (!id) return;
       setId(id); // id改变触发更新 切换 id ，重要！
       setLoading(true);
+
+      // 刚创建的新文档，不用查询内容（查也是空的）
+      if (type === "create") {
+        // 用 setTimeout 模拟 loading 效果（还有，不用 setTimeout 无法彻底清除编辑器之前的内容）
+        setTimeout(() => {
+          setTitle("");
+          SetEditorContent("");
+          setLoading(false);
+        }, 200);
+        return;
+      }
+
       getDoc(id).then((data: any) => {
         // 通过 id 找不到 doc
         if (data == null) {
@@ -62,10 +72,10 @@ export default function Content(props: IProps) {
         setLoading(false);
       });
     }
-    emitter.on(eventKey, load);
+    emitter.on(EVENT_KEY_NAV_DOC, load);
 
     return () => {
-      emitter.off(eventKey, load); // 及时销毁自定义事件
+      emitter.off(EVENT_KEY_NAV_DOC, load); // 及时销毁自定义事件
     };
   }, [id]);
 

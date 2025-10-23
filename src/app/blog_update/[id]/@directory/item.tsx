@@ -21,16 +21,19 @@ import { del } from "./action";
 import emitter from "@/lib/emitter";
 import scrollIntoView from "scroll-into-view-if-needed";
 import { isShowChildren, nav } from "./util";
+import { IDoc } from "./type";
+import { EVENT_KEY_CHANGE_DOC_TITLE } from "@/constants";
 
 interface IProps {
   id: string;
   defaultTitle: string;
   paramId: string;
-  list: Array<{ id: string; title: string; parentId: string | null }>;
+  list: IDoc[];
+  onCreateDoc: (parentId: string | null) => void;
 }
 
 export default function Item(props: IProps) {
-  const { id, defaultTitle, list = [], paramId } = props;
+  const { id, defaultTitle, list = [], paramId, onCreateDoc } = props;
   const isCurrent = id === paramId;
   const titleContainerRef = useRef<HTMLDivElement>(null);
 
@@ -47,19 +50,18 @@ export default function Item(props: IProps) {
   }
 
   // 修改标题的自定义事件
-  const [title, setTitle] = useState(defaultTitle);
+  const [title, setTitle] = useState(defaultTitle || "<无标题>");
   useEffect(() => {
     // 修改标题时触发事件
     if (!isCurrent) return; // 只监听当前文档
-    const eventKey = `CHANGE_DOC_TITLE`;
     function handler(payload: any) {
       const newTitle = payload as string;
       setTitle(newTitle);
     }
-    emitter.on(eventKey, handler);
+    emitter.on(EVENT_KEY_CHANGE_DOC_TITLE, handler);
 
     return () => {
-      emitter.off(eventKey, handler); // 及时清理自定义事件
+      emitter.off(EVENT_KEY_CHANGE_DOC_TITLE, handler); // 及时清理自定义事件
     };
   }, [isCurrent]);
 
@@ -80,13 +82,19 @@ export default function Item(props: IProps) {
     nav(id);
   }
 
+  // 新建子节点
+  function createDocHandler(parentId: string | null) {
+    onCreateDoc(parentId);
+    setShowChildren(true);
+  }
+
   return (
     <div>
       <div
         ref={titleContainerRef}
         className={cn(
           "flex justify-between items-center w-full hover:text-secondary-foreground group",
-          isCurrent && "text-secondary-foreground",
+          isCurrent && "text-secondary-foreground font-bold",
         )}
       >
         {/* icon 显示/隐藏 children */}
@@ -136,7 +144,10 @@ export default function Item(props: IProps) {
           </DropdownMenu>
         </div>
         {/* 创建文档 */}
-        <div className="cursor-pointer rounded-full p-1 hover:bg-background invisible group-hover:visible">
+        <div
+          onClick={() => createDocHandler(id)}
+          className="cursor-pointer rounded-full p-1 hover:bg-background invisible group-hover:visible"
+        >
           <Plus className="h-4 w-4" />
         </div>
       </div>
@@ -153,6 +164,7 @@ export default function Item(props: IProps) {
                 defaultTitle={title}
                 paramId={paramId}
                 list={list}
+                onCreateDoc={onCreateDoc}
               />
             );
           })}

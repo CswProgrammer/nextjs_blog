@@ -15,5 +15,5 @@ export default async function Directory({
   const userId = session?.user?.id ?? "system"; // 兜底系统用户
 
   const list = await getDocList();
-  return <List list={list} defaultParamId={params.id} />;
+  return <List defaultList={list} defaultParamId={params.id} />;
 }

@@ -16,7 +16,7 @@ export default async function BlogWork({ params }: { params: { id: string } }) {
     <>
       <div className="max-w-[980px] mx-auto my-10">
         <Content
-          id={id}
+          defaultId={id}
           defaultTitle={doc.title}
           defaultContent={doc.content}
         />
