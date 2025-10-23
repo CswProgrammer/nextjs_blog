@@ -4,11 +4,15 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db/db";
 import { getDocList } from "./@directory/action";
 import { redirect } from "next/navigation";
+import { getUserInfo } from "@/lib/session";
 
 export async function getDoc(id: string) {
+  const user = await getUserInfo();
+  if (user == null) return null;
+
   try {
     const doc = await db.docBlog.findUnique({
-      where: { id },
+      where: { id, userId: user.id },
     });
     return doc;
   } catch (ex) {

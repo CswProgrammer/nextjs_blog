@@ -7,17 +7,24 @@ import TiptapEditor from "@/components/editor";
 import { getDoc, updateContent, updateTitle } from "./client-action";
 import emitter from "@/lib/emitter";
 
-export default function Content(props: { id: string }) {
-  const { id } = props;
+interface IProps {
+  id: string;
+  defaultTitle: string;
+  defaultContent: string;
+}
+
+export default function Content(props: IProps) {
+  const { id, defaultTitle, defaultContent } = props;
 
   // loading
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // 找不到文章
   const [notFound, setNotFound] = useState(false);
 
   // 标题
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(defaultTitle);
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newTitle = e.target.value;
     setTitle(newTitle);
@@ -29,24 +36,34 @@ export default function Content(props: { id: string }) {
   }
 
   // 编辑器内容
-  const [editorContent, SetEditorContent] = useState("");
+  const [editorContent, SetEditorContent] = useState(defaultContent);
   function handleUpdate(content: string) {
     updateContent(id, content);
   }
 
   // 获取文章内容
   useEffect(() => {
-    setLoading(true);
-    getDoc(id).then((data: any) => {
-      // 通过 id 找不到 doc
-      if (data == null) {
-        setNotFound(true);
-        return;
-      }
-      setTitle(data.title);
-      SetEditorContent(data.content);
-      setLoading(false);
-    });
+    const eventKey = "NAV_DOC";
+    function load(payload: any) {
+      const { id } = payload || {};
+      if (!id) return;
+      setLoading(true);
+      getDoc(id).then((data: any) => {
+        // 通过 id 找不到 doc
+        if (data == null) {
+          setNotFound(true);
+          return;
+        }
+        setTitle(data.title);
+        SetEditorContent(data.content);
+        setLoading(false);
+      });
+    }
+    emitter.on(eventKey, load);
+
+    return () => {
+      emitter.off(eventKey, load); // 及时销毁自定义事件
+    };
   }, [id]);
 
   if (loading) {

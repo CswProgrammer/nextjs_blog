@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import {
   FileText,
   Ellipsis,
@@ -21,7 +20,7 @@ import {
 import { del } from "./action";
 import emitter from "@/lib/emitter";
 import scrollIntoView from "scroll-into-view-if-needed";
-import { isShowChildren } from "./util";
+import { isShowChildren, nav } from "./util";
 
 // 存储修改过的标题的
 const changedTitleObj: { [key: string]: string } = {}; // { id, changedTitle }
@@ -62,13 +61,18 @@ export default function Item(props: IProps) {
   useEffect(() => {
     // 修改标题时触发事件
     const eventKey = `CHANGE_DOC_TITLE_${id}`;
-    emitter.on(eventKey, (payload) => {
+    function handler(payload: any) {
       const newTitle = payload as string;
       changedTitleObj[id] = newTitle; // 记录下
       if (titleSpanRef.current) {
         titleSpanRef.current!.textContent = newTitle; // 修改 DOM
       }
-    });
+    }
+    emitter.on(eventKey, handler);
+
+    return () => {
+      emitter.off(eventKey, handler); // 及时清理自定义事件
+    };
   }, [id]);
 
   // 滚动到当前标题
@@ -81,6 +85,12 @@ export default function Item(props: IProps) {
       block: "center",
     });
   }, [isCurrent]);
+
+  // 点击标题
+  function onClickTitle() {
+    if (isCurrent) return;
+    nav(id);
+  }
 
   return (
     <div>
@@ -103,9 +113,9 @@ export default function Item(props: IProps) {
         )}
 
         {/* 标题链接 */}
-        <Link
-          href={`/blog_update/${id}`}
-          className="flex-auto overflow-hidden py-1.5 px-0.5 flex items-center"
+        <div
+          onClick={onClickTitle}
+          className="cursor-pointer flex-auto overflow-hidden py-1.5 px-0.5 flex items-center"
         >
           {!hasChildren && (
             <div className="w-4 mr-1">
@@ -115,7 +125,7 @@ export default function Item(props: IProps) {
           <span ref={titleSpanRef} className="truncate flex-auto">
             {getTitle(id, title)}
           </span>
-        </Link>
+        </div>
 
         {/* 操作按钮 */}
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">

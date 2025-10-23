@@ -1,4 +1,6 @@
 // 判断是否展示子节点
+import emitter from "@/lib/emitter";
+
 export function isShowChildren(
   id: string,
   paramId: string,
@@ -10,4 +12,17 @@ export function isShowChildren(
     if (curId === id) return true;
   }
   return false;
+}
+
+// 跳转链接 切换文档
+export function nav(id: string) {
+  const url = `/blog_update/${id}`;
+  emitter.emit("NAV_DOC", { id });
+  history.pushState({ docId: id }, "", url);
+}
+if (typeof window !== "undefined") {
+  const handlePopState = (event: PopStateEvent) => {
+    emitter.emit("NAV_DOC", { id: event.state.docId });
+  };
+  window.addEventListener("popstate", handlePopState); // 只能绑定一次
 }
