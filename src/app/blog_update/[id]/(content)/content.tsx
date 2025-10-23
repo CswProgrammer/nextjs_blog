@@ -6,7 +6,11 @@ import { Input } from "@/components/ui/input";
 import TiptapEditor from "@/components/editor";
 import { getDoc, updateContent, updateTitle } from "./client-action";
 import emitter from "@/lib/emitter";
-import { EVENT_KEY_CHANGE_DOC_TITLE, EVENT_KEY_NAV_DOC } from "@/constants";
+import {
+  EVENT_KEY_CHANGE_DOC_TITLE,
+  EVENT_KEY_NAV_DOC,
+  EVENT_KEY_CREATE_DOC,
+} from "@/constants";
 
 interface IProps {
   defaultId: string;
@@ -98,7 +102,15 @@ export default function Content(props: IProps) {
   if (notFound) {
     return (
       <div className="p-8 text-center text-muted-foreground">
-        <p>找不到文档，可在左侧创建新文档...</p>
+        <p>
+          找不到文档，
+          <span
+            className="underline cursor-pointer"
+            onClick={() => emitter.emit(EVENT_KEY_CREATE_DOC)} //发送消息 事件总线
+          >
+            创建新文档
+          </span>
+        </p>{" "}
       </div>
     );
   }

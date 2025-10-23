@@ -1,15 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { v4 as uuid } from "uuid";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Item from "./item";
-import { useToast } from "@/components/ui/use-toast";
 import emitter from "@/lib/emitter";
-import { nav } from "./util";
 import { IDoc } from "./type";
 import { EVENT_KEY_NAV_DOC } from "@/constants";
+import useList from "./hooks/useList";
 
 interface ListProps {
   defaultParamId: string;
@@ -17,8 +15,9 @@ interface ListProps {
 }
 
 export default function List({ defaultParamId, defaultList }: ListProps) {
-  const { toast } = useToast();
   const [paramId, setParamId] = useState(defaultParamId);
+
+  // 切换文档，重新设置 paramId
   useEffect(() => {
     function handler(payload: any) {
       const { id } = payload || {};
@@ -31,45 +30,7 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
       emitter.off(EVENT_KEY_NAV_DOC, handler); // 及时清理自定义事件
     };
   });
-
-  const [list, setList] = useState(defaultList);
-
-  // 创建文档
-  function createDoc(parentId: string | null = null) {
-    const newId = uuid();
-
-    // 更新列表
-    setList([
-      ...list,
-      {
-        id: newId,
-        title: "",
-        parentId,
-      },
-    ]);
-
-    // 跳转
-    nav(newId, "create");
-
-    // 异步创建
-    fetch("/api/doc", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: newId, parentId }),
-    })
-      .then((res) => res.json())
-      .then((resData) => {
-        if (resData.errno !== 0) {
-          toast({
-            variant: "destructive",
-            description: resData.msg || "创建失败",
-          });
-          return;
-        }
-      });
-  }
+  const { list, createDoc } = useList(defaultList);
 
   return (
     // <div className="h-[1000px]">
@@ -86,7 +47,6 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
               defaultTitle={title}
               paramId={paramId}
               list={list}
-              onCreateDoc={createDoc}
             />
           );
         })}
