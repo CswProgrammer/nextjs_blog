@@ -26,6 +26,7 @@ export async function getDocList() {
     select: {
       id: true,
       title: true,
+      parentId: true,
     },
     orderBy: {
       id: "asc",
