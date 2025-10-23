@@ -22,28 +22,16 @@ import emitter from "@/lib/emitter";
 import scrollIntoView from "scroll-into-view-if-needed";
 import { isShowChildren, nav } from "./util";
 
-// 存储修改过的标题的
-const changedTitleObj: { [key: string]: string } = {}; // { id, changedTitle }
-// 获取标题
-function getTitle(id: string, curTitle: string) {
-  let res = "<无标题>";
-  if (curTitle) res = curTitle;
-  const changedTitle = changedTitleObj[id];
-  if (changedTitle) res = changedTitle; // 如果有 changedTitle ，则用这个
-  return res;
-}
-
 interface IProps {
   id: string;
-  title: string;
+  defaultTitle: string;
   paramId: string;
   list: Array<{ id: string; title: string; parentId: string | null }>;
 }
 
 export default function Item(props: IProps) {
-  const { id, title, list = [], paramId } = props;
+  const { id, defaultTitle, list = [], paramId } = props;
   const isCurrent = id === paramId;
-  const titleSpanRef = useRef<HTMLSpanElement>(null);
   const titleContainerRef = useRef<HTMLDivElement>(null);
 
   const children = list.filter((i) => i.parentId === id);
@@ -58,22 +46,22 @@ export default function Item(props: IProps) {
     setShowChildren(!showChildren);
   }
 
+  // 修改标题的自定义事件
+  const [title, setTitle] = useState(defaultTitle);
   useEffect(() => {
     // 修改标题时触发事件
-    const eventKey = `CHANGE_DOC_TITLE_${id}`;
+    if (!isCurrent) return; // 只监听当前文档
+    const eventKey = `CHANGE_DOC_TITLE`;
     function handler(payload: any) {
       const newTitle = payload as string;
-      changedTitleObj[id] = newTitle; // 记录下
-      if (titleSpanRef.current) {
-        titleSpanRef.current!.textContent = newTitle; // 修改 DOM
-      }
+      setTitle(newTitle);
     }
     emitter.on(eventKey, handler);
 
     return () => {
       emitter.off(eventKey, handler); // 及时清理自定义事件
     };
-  }, [id]);
+  }, [isCurrent]);
 
   // 滚动到当前标题
   useEffect(() => {
@@ -122,9 +110,7 @@ export default function Item(props: IProps) {
               <FileText className="h-4 w-4" />
             </div>
           )}
-          <span ref={titleSpanRef} className="truncate flex-auto">
-            {getTitle(id, title)}
-          </span>
+          <span className="truncate flex-auto">{title}</span>
         </div>
 
         {/* 操作按钮 */}
@@ -164,7 +150,7 @@ export default function Item(props: IProps) {
               <Item
                 key={id}
                 id={id}
-                title={title}
+                defaultTitle={title}
                 paramId={paramId}
                 list={list}
               />

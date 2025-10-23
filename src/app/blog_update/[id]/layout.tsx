@@ -3,6 +3,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { redirect } from "next/navigation";
 import BlogNav from "@/components/blognav";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -12,7 +13,7 @@ import UserSettingButton from "@/components/user-setting-button";
 import SignOutButton from "@/components/sign-out-button";
 import { getUserInfo } from "@/lib/session";
 
-export default function Layout({
+export default async function Layout({
   params,
   children,
   directory, // parallel route
@@ -21,6 +22,11 @@ export default function Layout({
   children: React.ReactNode;
   directory: React.ReactNode;
 }>) {
+  const user = await getUserInfo();
+  if (user == null) {
+    redirect("/user-info");
+    return null;
+  }
   const { id = "0" } = params;
 
   return (
@@ -28,7 +34,8 @@ export default function Layout({
       <ResizablePanel defaultSize={18}>
         <div className="flex flex-col h-screen bg-muted text-muted-foreground p-2">
           <div>
-            <UserSettingButton />
+            <UserSettingButton user={user} />
+
             <Button className="w-full justify-start px-2" variant="ghost">
               <Search className="h-4 w-4" />
               &nbsp;&nbsp;搜索

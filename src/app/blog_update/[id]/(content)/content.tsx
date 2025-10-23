@@ -8,13 +8,14 @@ import { getDoc, updateContent, updateTitle } from "./client-action";
 import emitter from "@/lib/emitter";
 
 interface IProps {
-  id: string;
+  defaultId: string;
   defaultTitle: string;
   defaultContent: string;
 }
 
 export default function Content(props: IProps) {
-  const { id, defaultTitle, defaultContent } = props;
+  const { defaultId, defaultTitle, defaultContent } = props;
+  const [id, setId] = useState(defaultId);
 
   // loading
   const [loading, setLoading] = useState(false);
@@ -31,7 +32,8 @@ export default function Content(props: IProps) {
     updateTitle(id, newTitle);
 
     // 触发事件，以更新左侧列表的文章标题
-    const key = `CHANGE_DOC_TITLE_${id}`;
+    const key = `CHANGE_DOC_TITLE`;
+
     emitter.emit(key, newTitle);
   }
 
@@ -47,6 +49,7 @@ export default function Content(props: IProps) {
     function load(payload: any) {
       const { id } = payload || {};
       if (!id) return;
+      setId(id); // id改变触发更新 切换 id ，重要！
       setLoading(true);
       getDoc(id).then((data: any) => {
         // 通过 id 找不到 doc
