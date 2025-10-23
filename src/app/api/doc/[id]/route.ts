@@ -1,4 +1,3 @@
-import { revalidatePath } from "next/cache";
 import { getUserInfo } from "@/lib/session";
 import { db } from "@/db/db";
 import {

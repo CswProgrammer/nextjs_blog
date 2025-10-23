@@ -8,6 +8,7 @@ import {
   Trash2,
   ChevronDown,
   ChevronRight,
+  Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -120,7 +121,7 @@ export default function Item(props: IProps) {
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="cursor-pointer rounded-full p-0.5 hover:bg-background">
+              <div className="cursor-pointer rounded-full p-1 hover:bg-background">
                 <Ellipsis className="h-4 w-4" />
               </div>
             </DropdownMenuTrigger>
@@ -137,6 +138,10 @@ export default function Item(props: IProps) {
               <DropdownMenuItem>其他操作</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        </div>
+        {/* 创建文档 */}
+        <div className="cursor-pointer rounded-full p-1 hover:bg-background invisible group-hover:visible">
+          <Plus className="h-4 w-4" />
         </div>
       </div>
 

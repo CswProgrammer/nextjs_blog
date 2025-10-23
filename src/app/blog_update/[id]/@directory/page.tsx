@@ -1,10 +1,10 @@
 import { FileText } from "lucide-react";
-import CreateSubmitButton from "./createsubmitbutton";
-import { create, getDocList } from "./action";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import Item from "./item";
 import { auth } from "auth";
+
+import { getDocList } from "./action";
+import List from "./list";
 
 export default async function Directory({
   params,
@@ -15,28 +15,5 @@ export default async function Directory({
   const userId = session?.user?.id ?? "system"; // 兜底系统用户
 
   const list = await getDocList();
-
-  return (
-    <>
-      {list
-        .filter((i) => i.parentId == null) // 顶级目录
-        .map((doc) => {
-          const { id, title } = doc;
-          return (
-            <Item
-              key={id}
-              id={id}
-              title={title}
-              paramId={params.id}
-              list={list}
-            />
-          );
-        })}
-
-      <form action={create}>
-        <input type="hidden" name="userId" value={userId} />
-        <CreateSubmitButton />
-      </form>
-    </>
-  );
+  return <List list={list} paramId={params.id} />;
 }

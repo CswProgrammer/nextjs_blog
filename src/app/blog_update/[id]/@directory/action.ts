@@ -3,24 +3,6 @@
 import { db } from "@/db/db";
 import { redirect } from "next/navigation";
 
-export async function create(formData: FormData) {
-  const userId = formData.get("userId") as string;
-  if (!userId) {
-    throw new Error("未登录");
-  }
-  const newDoc = await db.docBlog.create({
-    data: {
-      title: "新建Blog " + Date.now().toString().slice(-4),
-      content: "",
-      category: "",
-      user: {
-        connect: { id: userId }, // 或已存在的用户
-      },
-    },
-  });
-  redirect(`/blog_update/${newDoc.id}`);
-}
-
 export async function getDocList() {
   const list = db.docBlog.findMany({
     select: {
@@ -29,7 +11,7 @@ export async function getDocList() {
       parentId: true,
     },
     orderBy: {
-      id: "asc",
+      createdAt: "asc",
     },
   });
   return list || [];
