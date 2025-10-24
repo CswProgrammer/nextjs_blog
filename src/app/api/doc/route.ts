@@ -5,6 +5,7 @@ import {
   genErrorData,
   genUnAuthData,
 } from "@/app/api/utils/gen-res-data";
+import { NextRequest } from "next/server";
 
 // 创建 doc
 export async function POST(request: Request) {
@@ -38,7 +39,8 @@ export async function PATCH(request: Request) {
   if (user == null) return Response.json(genUnAuthData());
 
   const body = await request.json();
-  const { ids = [] } = body;
+  const { ids = [], data = {} } = body;
+
   console.log("【后端】收到删除", ids); // ← 必须打印
 
   try {
@@ -47,14 +49,61 @@ export async function PATCH(request: Request) {
         id: { in: ids },
         userId: user.id,
       },
-      data: {
-        isDeleted: true,
+      data,
+    });
+    return Response.json(genSuccessData());
+  } catch (ex) {
+    console.error("Delete docs error", ex);
+    return Response.json(genErrorData("Delete docs error"));
+  }
+}
+
+// 获取多个 docs
+export async function GET(request: NextRequest) {
+  const user = await getUserInfo();
+  if (user == null) return Response.json(genUnAuthData());
+
+  const searchParams = request.nextUrl.searchParams;
+  const isDeleted = searchParams.get("isDeleted"); // 是否软删除
+
+  const list = await db.docBlog.findMany({
+    select: {
+      id: true,
+      title: true,
+      parentId: true,
+      isDeleted: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+    where: {
+      userId: user.id || "",
+      isDeleted: !!isDeleted,
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+  });
+
+  return Response.json(genSuccessData(list || []));
+}
+
+// 删除多个 docs
+export async function DELETE(request: NextRequest) {
+  const user = await getUserInfo();
+  if (user == null) return Response.json(genUnAuthData());
+
+  const body = await request.json();
+  const { ids = [] } = body;
+
+  try {
+    // 真实删除
+    await db.docBlog.deleteMany({
+      where: {
+        id: { in: ids },
+        userId: user.id,
       },
     });
     console.log("【后端】update条件", { ids, userId: user.id });
-    console.log("【后端】软删除影响行数", res.count); // 应该 > 0
-
-    return Response.json(genSuccessData({ affected: res.count }));
   } catch (ex) {
     console.error("Delete docs error", ex);
     return Response.json(genErrorData("Delete docs error"));

@@ -5,6 +5,7 @@ import emitter from "@/lib/emitter";
 import { IDoc } from "../type";
 import { nav, getDescendantsIds } from "../util";
 import { EVENT_KEY_CREATE_DOC, EVENT_KEY_DEL_DOC } from "@/constants";
+import { IAjaxRes, patch, post } from "@/lib/ajax";
 
 export default function useList(defaultList: IDoc[], paramId: string) {
   const { toast } = useToast();
@@ -30,23 +31,13 @@ export default function useList(defaultList: IDoc[], paramId: string) {
       nav(newId, "create");
 
       // 异步创建
-      fetch("/api/doc", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: newId, parentId }),
-      })
-        .then((res) => res.json())
-        .then((resData) => {
-          if (resData.errno !== 0) {
-            toast({
-              variant: "destructive",
-              description: resData.msg || "创建失败",
-            });
-            return;
-          }
+      post("/api/doc", { id: newId, parentId }).then((resData: IAjaxRes) => {
+        if (resData.errno === 0) return;
+        toast({
+          variant: "destructive",
+          description: resData.msg || "创建失败",
         });
+      });
     },
     [list, toast],
   );
@@ -80,13 +71,8 @@ export default function useList(defaultList: IDoc[], paramId: string) {
         console.log("【前端】最终删除 ids:", ids);
 
         // 异步执行软删除
-        fetch("/api/doc", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ids }),
-        })
-          .then((res) => res.json())
-          .then((resData) => {
+        patch("/api/doc", { ids, data: { isDeleted: true } }).then(
+          (resData: IAjaxRes) => {
             if (resData.errno !== 0) {
               toast({
                 variant: "destructive",
@@ -97,7 +83,8 @@ export default function useList(defaultList: IDoc[], paramId: string) {
             toast({
               description: `已删除 ${ids.length} 个文档，放在回收站`,
             });
-          });
+          },
+        );
         console.log("【前端】fetch 已调用，等待响应...");
 
         // 更新 list

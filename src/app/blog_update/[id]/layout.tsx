@@ -7,7 +7,8 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search, Star, LogOut, Trash2, Users } from "lucide-react";
+import { Search, Star, LogOut, Users } from "lucide-react";
+import Trash from "../trash";
 import UserSettingButton from "@/components/user-setting-button";
 import SignOutButton from "@/components/sign-out-button";
 import { getUserInfo } from "@/lib/session";
@@ -49,10 +50,7 @@ export default async function Layout({
           <Separator className="my-4" />
 
           <div className="flex-shrink-0">
-            <Button className="w-full justify-start px-2" variant="ghost">
-              <Trash2 className="h-4 w-4" />
-              &nbsp;&nbsp;回收站
-            </Button>
+            <Trash />
 
             <SignOutButton className="w-full justify-start px-2 ">
               <LogOut className="h-4 w-4" />
