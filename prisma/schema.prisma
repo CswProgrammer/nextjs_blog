@@ -71,6 +71,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   docs          DocBlog[]
+  lastDocId     String?
+
 }
 
 model VerificationToken {

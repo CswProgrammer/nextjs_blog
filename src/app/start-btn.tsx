@@ -14,8 +14,11 @@ export default async function StartButton() {
       </SignInButton>
     );
   }
+  const lastDocId = (user as any).lastDocId || "";
+
   return (
-    <Link href="/blog_update/1" passHref legacyBehavior>
+    // <Link href="/blog_update/`${lastDocId}`}" passHref legacyBehavior>
+    <Link href={`/blog_update/${lastDocId}`}>
       <Button className="text-base" size="lg">
         <Zap className="h-4 w-4" />
         &nbsp;开始使用
