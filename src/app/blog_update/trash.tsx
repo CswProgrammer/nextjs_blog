@@ -53,6 +53,7 @@ function TrashTable() {
   const router = useRouter();
   const { toast } = useToast();
 
+  const [loading, setLoading] = useState(true);
   const [list, setList] = useState<IDoc[]>([]);
 
   // 加载数据
@@ -63,7 +64,10 @@ function TrashTable() {
   }, []);
 
   useEffect(() => {
-    load().then((l) => setList(l));
+    load().then((l) => {
+      setList(l);
+      setLoading(false);
+    });
   }, [load]);
 
   // 搜索关键字
@@ -113,6 +117,22 @@ function TrashTable() {
 
     // 更新列表
     setList(list.filter((d) => !ids.includes(d.id)));
+  }
+
+  if (loading) {
+    return (
+      <div className="h-96">
+        <p className="mt-10 text-center text-muted-foreground">loading...</p>
+      </div>
+    );
+  }
+
+  if (!loading && list.length === 0) {
+    return (
+      <div className="h-96">
+        <p className="mt-10 text-center text-muted-foreground">暂无数据</p>
+      </div>
+    );
   }
 
   return (
