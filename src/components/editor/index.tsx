@@ -30,6 +30,7 @@ const TiptapEditor = (props: IProps) => {
   const menuContainerRef = useRef(null);
 
   const editor = useEditor({
+    immediatelyRender: false, // 👈 加这一行
     extensions,
     content: gen_content(rawContent),
     onUpdate: ({ editor }) => {

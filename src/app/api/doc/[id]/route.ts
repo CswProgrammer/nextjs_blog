@@ -16,7 +16,7 @@ export async function GET(
 
   const { id } = params;
   const doc = await db.docBlog.findUnique({
-    where: { id, userId: user.id },
+    where: { id, userId: user.id, isDeleted: false || null },
   });
 
   return Response.json(genSuccessData(doc));
@@ -32,6 +32,8 @@ export async function PATCH(
 
   const { id } = params;
   const body = await request.json();
+  console.log("【后端】收到更新", id); // ← 必须打印
+
   try {
     await db.docBlog.update({
       where: { id, userId: user.id },

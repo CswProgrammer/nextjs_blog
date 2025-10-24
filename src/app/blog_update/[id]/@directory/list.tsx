@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Item from "./item";
 import emitter from "@/lib/emitter";
 import { IDoc } from "./type";
-import { EVENT_KEY_NAV_DOC } from "@/constants";
+import { EVENT_KEY_NAV_DOC, EVENT_KEY_CREATE_DOC } from "@/constants";
 import useList from "./hooks/useList";
 
 interface ListProps {
@@ -30,7 +30,7 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
       emitter.off(EVENT_KEY_NAV_DOC, handler); // 及时清理自定义事件
     };
   });
-  const { list, createDoc } = useList(defaultList);
+  const { list } = useList(defaultList, paramId);
 
   return (
     // <div className="h-[1000px]">
@@ -55,7 +55,7 @@ export default function List({ defaultParamId, defaultList }: ListProps) {
       <Button
         className="w-full justify-start px-0.5 font-bold"
         variant="ghost"
-        onClick={() => createDoc()}
+        onClick={() => emitter.emit(EVENT_KEY_CREATE_DOC)}
       >
         <Plus className="h-4 w-4 mr-1" />
         创建文档

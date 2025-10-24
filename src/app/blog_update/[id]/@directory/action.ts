@@ -2,32 +2,26 @@
 
 import { db } from "@/db/db";
 import { redirect } from "next/navigation";
+import { getUserInfo } from "@/lib/session";
 
 export async function getDocList() {
+  const user = await getUserInfo();
+  if (user == null) return [];
+
   const list = db.docBlog.findMany({
     select: {
       id: true,
       title: true,
       parentId: true,
     },
+    //查询未删除的文档
+    where: {
+      userId: user.id || "",
+      isDeleted: false || null,
+    },
     orderBy: {
       createdAt: "asc",
     },
   });
   return list || [];
-}
-
-export async function del(id: string) {
-  // 删除
-  await db.docBlog.delete({
-    where: {
-      id,
-    },
-  });
-
-  const list = await getDocList();
-  const idList = list.map((doc) => doc.id);
-  const otherId = idList.find((i) => i !== id);
-
-  redirect(`/blog_update/${otherId}`); // 删除以后，定位到其他文档
 }

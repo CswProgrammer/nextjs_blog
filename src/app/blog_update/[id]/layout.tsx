@@ -4,7 +4,6 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { redirect } from "next/navigation";
-import BlogNav from "@/components/blognav";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,6 +11,7 @@ import { Search, Star, LogOut, Trash2, Users } from "lucide-react";
 import UserSettingButton from "@/components/user-setting-button";
 import SignOutButton from "@/components/sign-out-button";
 import { getUserInfo } from "@/lib/session";
+import TopBar from "./top-bar";
 
 export default async function Layout({
   params,
@@ -25,7 +25,6 @@ export default async function Layout({
   const user = await getUserInfo();
   if (user == null) {
     redirect("/user-info");
-    return null;
   }
   const { id = "0" } = params;
 
@@ -71,9 +70,8 @@ export default async function Layout({
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={82}>
         <div className="h-screen flex flex-col">
-          {/* nav bar */}
-          <BlogNav workId={id} />
-          {/* content */}
+          {/* top bar */}
+          <TopBar defaultId={id} /> {/* content */}
           <div
             id="work-content-scroll-container"
             className="flex-auto overflow-y-auto"
