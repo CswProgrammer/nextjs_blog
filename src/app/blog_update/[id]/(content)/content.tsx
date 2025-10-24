@@ -11,6 +11,7 @@ import {
   EVENT_KEY_NAV_DOC,
   EVENT_KEY_CREATE_DOC,
   EVENT_KEY_CHANGE_UPDATING,
+  EVENT_KEY_CHANGE_IS_STAR,
 } from "@/constants";
 
 interface IProps {
@@ -18,10 +19,17 @@ interface IProps {
   defaultTitle: string;
   defaultContent: string;
   defaultNotFound: boolean;
+  defaultIsStar: boolean | null;
 }
 
 export default function Content(props: IProps) {
-  const { defaultId, defaultTitle, defaultContent, defaultNotFound } = props;
+  const {
+    defaultId,
+    defaultTitle,
+    defaultContent,
+    defaultNotFound,
+    defaultIsStar,
+  } = props;
 
   const [id, setId] = useState(defaultId);
 
@@ -46,6 +54,12 @@ export default function Content(props: IProps) {
     emitter.emit(EVENT_KEY_CHANGE_DOC_TITLE, newTitle);
   }
 
+  // isStar
+  const [isStar, setIsStar] = useState(defaultIsStar);
+  useEffect(() => {
+    emitter.emit(EVENT_KEY_CHANGE_IS_STAR, { isStar });
+  }, [isStar]);
+
   // 编辑器内容
   const [editorContent, SetEditorContent] = useState(defaultContent);
   function handleUpdate(content: string) {
@@ -60,6 +74,8 @@ export default function Content(props: IProps) {
       const { id, type } = payload || {};
       if (!id) return;
       setId(id); // id改变触发更新 切换 id ，重要！
+      setIsStar(false);
+
       setNotFound(false);
 
       setLoading(true);
@@ -83,6 +99,7 @@ export default function Content(props: IProps) {
         }
         setTitle(data.title);
         SetEditorContent(data.content);
+        setIsStar(data.isStar);
         setLoading(false);
       });
     }

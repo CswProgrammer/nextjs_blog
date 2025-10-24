@@ -64,7 +64,14 @@ export async function GET(request: NextRequest) {
   if (user == null) return Response.json(genUnAuthData());
 
   const searchParams = request.nextUrl.searchParams;
-  const isDeleted = searchParams.get("isDeleted"); // 是否软删除
+
+  // 是否软删除
+  const isDeletedParam = searchParams.get("isDeleted");
+  const isDeleted = isDeletedParam == null ? isDeletedParam : !!isDeletedParam; // boolean 或者 null
+
+  // 是否收藏
+  let isStarParam = searchParams.get("isStar");
+  const isStar = isStarParam == null ? isStarParam : !!isStarParam; // boolean 或者 null
 
   const list = await db.docBlog.findMany({
     select: {
@@ -77,7 +84,8 @@ export async function GET(request: NextRequest) {
     },
     where: {
       userId: user.id || "",
-      isDeleted: !!isDeleted,
+      isDeleted: isDeleted,
+      isStar: isStar,
     },
     orderBy: {
       updatedAt: "desc",

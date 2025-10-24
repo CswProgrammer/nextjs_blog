@@ -13,6 +13,7 @@ import UserSettingButton from "@/components/user-setting-button";
 import SignOutButton from "@/components/sign-out-button";
 import { getUserInfo } from "@/lib/session";
 import TopBar from "./top-bar";
+import StarList from "../star-list";
 
 export default async function Layout({
   params,
@@ -40,10 +41,7 @@ export default async function Layout({
               <Search className="h-4 w-4" />
               &nbsp;&nbsp;搜索
             </Button>
-            <Button className="w-full justify-start px-2" variant="ghost">
-              <Star className="h-4 w-4" />
-              &nbsp;&nbsp;收藏夹
-            </Button>
+            <StarList />
           </div>
           <Separator className="my-4" />
           <div className="flex-auto overflow-y-auto">{directory}</div>
