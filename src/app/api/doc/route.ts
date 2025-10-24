@@ -66,12 +66,41 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
 
   // 是否软删除
-  const isDeletedParam = searchParams.get("isDeleted");
-  const isDeleted = isDeletedParam == null ? isDeletedParam : !!isDeletedParam; // boolean 或者 null
+  const isDeletedParam = searchParams.get("isDeleted"); // '0' 或 '1'
+  let isDeleted: boolean | null = null;
+  if (isDeletedParam === "0") isDeleted = false;
+  if (isDeletedParam === "1") isDeleted = true;
 
   // 是否收藏
-  let isStarParam = searchParams.get("isStar");
-  const isStar = isStarParam == null ? isStarParam : !!isStarParam; // boolean 或者 null
+  let isStarParam = searchParams.get("isStar"); // '0' 或 '1'
+  let isStar: boolean | null = null;
+  if (isStarParam === "0") isStar = false;
+  if (isStarParam === "1") isStar = true;
+
+  // 搜索关键字
+  const keyword = searchParams.get("keyword") || null;
+
+  // where
+  const whereOpt: any = {};
+  if (isDeleted != null) {
+    if (isDeleted) {
+      whereOpt.isDeleted = true;
+    } else {
+      whereOpt.isDeleted = false || null;
+    }
+  }
+  if (isStar != null) {
+    if (isStar) {
+      whereOpt.isStar = true;
+    } else {
+      whereOpt.isStar = false || null;
+    }
+  }
+  if (keyword != null) {
+    whereOpt.title = {
+      contains: keyword,
+    };
+  }
 
   const list = await db.docBlog.findMany({
     select: {
@@ -84,8 +113,7 @@ export async function GET(request: NextRequest) {
     },
     where: {
       userId: user.id || "",
-      isDeleted: isDeleted,
-      isStar: isStar,
+      ...whereOpt,
     },
     orderBy: {
       updatedAt: "desc",

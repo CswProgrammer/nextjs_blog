@@ -4,16 +4,16 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search, Star, LogOut, Users } from "lucide-react";
 import Trash from "../trash";
+import { LogOut, Users } from "lucide-react";
 import UserSettingButton from "@/components/user-setting-button";
 import SignOutButton from "@/components/sign-out-button";
 import { getUserInfo } from "@/lib/session";
 import TopBar from "./top-bar";
 import StarList from "../star-list";
+import SearchComp from "../search";
 
 export default async function Layout({
   params,
@@ -37,10 +37,8 @@ export default async function Layout({
           <div>
             <UserSettingButton user={user} />
 
-            <Button className="w-full justify-start px-2" variant="ghost">
-              <Search className="h-4 w-4" />
-              &nbsp;&nbsp;搜索
-            </Button>
+            <SearchComp />
+
             <StarList />
           </div>
           <Separator className="my-4" />
