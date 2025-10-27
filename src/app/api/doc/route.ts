@@ -13,11 +13,33 @@ export async function POST(request: Request) {
   if (user == null) return Response.json(genUnAuthData());
 
   const body = await request.json();
-  const { id = undefined, title = "", content = "", parentId = null } = body;
+  let {
+    originId,
+    id = undefined,
+    title = "",
+    content = "",
+    parentId = null,
+  } = body;
 
   console.log("【后端】创建文档前", id, parentId, user.id);
+
+  // 从 originId 复制一个
+  if (originId) {
+    const originDoc = await db.docBlog.findUnique({
+      where: { id: originId },
+    });
+    if (originDoc == null) {
+      return Response.json(genErrorData("Origin doc not found"));
+    }
+
+    title = originDoc.title + " 复制";
+    content = originDoc.content;
+    parentId = originDoc.parentId;
+  }
+
+  // 创建 doc
   try {
-    await db.docBlog.create({
+    const doc = await db.docBlog.create({
       data: {
         id, // 用前端传来的 id
         title,
@@ -28,7 +50,7 @@ export async function POST(request: Request) {
       },
     });
     console.log("【后端】创建文档后", id, parentId, user.id);
-    return Response.json(genSuccessData());
+    return Response.json(genSuccessData(doc));
   } catch (ex) {
     console.error("Create doc error", ex);
     return Response.json(genErrorData("Create doc error"));

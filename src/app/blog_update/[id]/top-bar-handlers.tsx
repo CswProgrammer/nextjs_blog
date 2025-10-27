@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import DocDeleteButton from "@/components/delete-doc-button";
+import DuplicateDocButton from "@/components/duplicate-doc-button";
 
 interface IProps {
   id: string;
@@ -26,11 +27,13 @@ export default function TopBarHandlers(props: IProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem className="p-0">
+          <DuplicateDocButton id={id} />
+        </DropdownMenuItem>
+        <DropdownMenuItem>其他操作2</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="p-0">
           <DocDeleteButton id={id} />
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>其他操作1</DropdownMenuItem>
-        <DropdownMenuItem>其他操作2</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
