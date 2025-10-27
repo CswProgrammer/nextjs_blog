@@ -4,7 +4,12 @@ import { useToast } from "@/components/ui/use-toast";
 import emitter from "@/lib/emitter";
 import { IDoc } from "../type";
 import { nav, getDescendantsIds } from "../util";
-import { EVENT_KEY_CREATE_DOC, EVENT_KEY_DEL_DOC } from "@/constants";
+import {
+  EVENT_KEY_CREATE_DOC,
+  EVENT_KEY_DEL_DOC,
+  EVENT_KEY_CHANGE_IS_STAR,
+} from "@/constants";
+
 import { IAjaxRes, patch, post } from "@/lib/ajax";
 
 export default function useList(defaultList: IDoc[], paramId: string) {
@@ -164,6 +169,23 @@ export default function useList(defaultList: IDoc[], paramId: string) {
       emitter.off(EVENT_KEY_DEL_DOC, handleDel);
     };
   }, [deleteDoc]);
+
+  // 监听 isStar 状态变化
+  useEffect(() => {
+    function handler(payload: any) {
+      const { isStar = false, id: docId = "" } = payload;
+      if (!docId) return;
+      setList((prevList) => {
+        return prevList.map((i) => {
+          if (i.id === docId) return { ...i, isStar };
+          return i;
+        });
+      });
+    }
+    emitter.on(EVENT_KEY_CHANGE_IS_STAR, handler);
+
+    return () => emitter.off(EVENT_KEY_CHANGE_IS_STAR, handler); // 及时销毁自定义事件
+  }, []);
 
   return { list };
 }

@@ -13,6 +13,7 @@ export async function getDocList() {
       id: true,
       title: true,
       parentId: true,
+      isStar: true,
     },
     //查询未删除的文档
     where: {

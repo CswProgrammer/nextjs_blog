@@ -3,18 +3,13 @@
 import { useState, useEffect, useCallback } from "react";
 import Logo from "@/components/logo";
 import ChangeTheme from "@/components/changetheme";
-import { Button } from "@/components/ui/button";
-import { Forward, Star, Check, PencilLine } from "lucide-react";
+import { Forward, Check, PencilLine } from "lucide-react";
 
 import TopBarHandlers from "./top-bar-handlers";
 
 import emitter from "@/lib/emitter";
-import {
-  EVENT_KEY_NAV_DOC,
-  EVENT_KEY_CHANGE_UPDATING,
-  EVENT_KEY_CHANGE_IS_STAR,
-} from "@/constants";
-import { updateIsStar } from "./(content)/client-action";
+import { EVENT_KEY_NAV_DOC, EVENT_KEY_CHANGE_UPDATING } from "@/constants";
+import StarDocButton from "@/components/star-doc-button";
 
 interface IProps {
   defaultId: string;
@@ -36,27 +31,6 @@ export default function TopBar(props: IProps) {
       emitter.off(EVENT_KEY_CHANGE_UPDATING, handler); // 及时销毁自定义事件
     };
   }, []);
-
-  // 监听 isStar 状态
-  const [isStar, setIsStar] = useState(false);
-  useEffect(() => {
-    function handler(payload: any) {
-      const { isStar = false } = payload;
-      setIsStar(isStar);
-    }
-    emitter.on(EVENT_KEY_CHANGE_IS_STAR, handler);
-
-    return () => emitter.off(EVENT_KEY_CHANGE_IS_STAR, handler); // 及时销毁自定义事件
-  }, []);
-
-  // isStar 更新数据库
-  const handleUpdateIsStar = useCallback(async () => {
-    const newIsStar = !isStar;
-    setUpdating(true);
-    await updateIsStar(id, newIsStar);
-    setIsStar(newIsStar);
-    setUpdating(false);
-  }, [isStar, id]);
 
   return (
     <div className="flex text-secondary-foreground my-1 mx-3 bg-ground pb-1 border-b">
@@ -84,14 +58,8 @@ export default function TopBar(props: IProps) {
             <Forward className="h-4 w-4" />
             &nbsp;分享
           </Button> */}
-          <Button
-            variant={isStar ? "secondary" : "ghost"}
-            size="sm"
-            onClick={handleUpdateIsStar}
-          >
-            <Star className="h-4 w-4 mr-1" />
-            {isStar ? "已收藏" : "收藏"}
-          </Button>
+          <StarDocButton id={id} />
+
           <TopBarHandlers id={id} />
           <ChangeTheme />
         </div>
