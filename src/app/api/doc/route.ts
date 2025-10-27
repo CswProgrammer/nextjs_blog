@@ -15,9 +15,11 @@ export async function POST(request: Request) {
   const body = await request.json();
   const { id = undefined, title = "", content = "", parentId = null } = body;
 
+  console.log("【后端】创建文档前", id, parentId, user.id);
   try {
     await db.docBlog.create({
       data: {
+        id, // 用前端传来的 id
         title,
         content,
         parentId,
@@ -25,6 +27,7 @@ export async function POST(request: Request) {
         userId: user.id!,
       },
     });
+    console.log("【后端】创建文档后", id, parentId, user.id);
     return Response.json(genSuccessData());
   } catch (ex) {
     console.error("Create doc error", ex);
