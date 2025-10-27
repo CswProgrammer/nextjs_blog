@@ -21,7 +21,7 @@ async function updateDoc(
 ) {
   const url = `/api/doc/${id}`;
   const res = await patch(url, data);
-  emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: false }); // 编辑“已更新”
+  emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: false, id }); // 编辑“已更新”
 
   return res;
 }

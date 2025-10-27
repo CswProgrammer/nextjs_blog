@@ -48,7 +48,7 @@ export default function Content(props: IProps) {
     setTitle(newTitle);
 
     // 更新数据库
-    emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: true }); // 标记“修改中”
+    emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: true, id }); // 标记“修改中”
     updateTitle(id, newTitle);
 
     // 触发事件，以更新左侧列表的文章标题
@@ -64,7 +64,7 @@ export default function Content(props: IProps) {
   // 编辑器内容
   const [editorContent, SetEditorContent] = useState(defaultContent);
   function handleUpdate(content: string) {
-    emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: true }); // 标记“修改中”
+    emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: true, id }); // 标记“修改中”
 
     updateContent(id, content);
   }
