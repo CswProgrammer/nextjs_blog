@@ -9,11 +9,11 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
 import {
   Table,
   TableBody,
@@ -40,10 +40,8 @@ export default function Trash() {
       <DialogContent className="">
         <DialogHeader>
           <DialogTitle>回收站</DialogTitle>
-          <DialogDescription asChild>
-            <TrashTable />
-          </DialogDescription>
         </DialogHeader>
+        <TrashTable />
       </DialogContent>
     </Dialog>
   );

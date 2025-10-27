@@ -32,14 +32,12 @@ export default function UserSettingButton({ user }: { user: IUser }) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>修改用户信息</DialogTitle>
-          <DialogDescription asChild>
-            <UserProfileForm
-              name={name || ""}
-              avatar={image || ""}
-              email={email || ""}
-            />
-          </DialogDescription>
         </DialogHeader>
+        <UserProfileForm
+          name={name || ""}
+          avatar={image || ""}
+          email={email || ""}
+        />
       </DialogContent>
     </Dialog>
   );

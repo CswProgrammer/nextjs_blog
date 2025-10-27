@@ -8,11 +8,11 @@ import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
 import {
   Table,
   TableBody,
@@ -37,10 +37,8 @@ export default function StarList() {
       <DialogContent className="">
         <DialogHeader>
           <DialogTitle>收藏夹</DialogTitle>
-          <DialogDescription asChild>
-            <StarListTable />
-          </DialogDescription>
         </DialogHeader>
+        <StarListTable />
       </DialogContent>
     </Dialog>
   );

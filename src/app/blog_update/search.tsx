@@ -8,17 +8,18 @@ import {
   Trash2,
   FileSearch,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
 import debounce from "lodash.debounce";
 import { get } from "@/lib/ajax";
 import { IDoc } from "./[id]/@directory/type";
@@ -35,10 +36,8 @@ export default function Search() {
       <DialogContent className="">
         <DialogHeader>
           <DialogTitle>搜索</DialogTitle>
-          <DialogDescription asChild>
-            <SearchPanel />
-          </DialogDescription>
         </DialogHeader>
+        <SearchPanel />
       </DialogContent>
     </Dialog>
   );
