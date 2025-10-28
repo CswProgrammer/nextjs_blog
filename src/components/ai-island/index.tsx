@@ -11,7 +11,11 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CONTENT_WIDTH, EVENT_KEY_FOCUS_AI } from "@/constants"; // 在这里获取内容宽度，不要直接使用数字
+import {
+  CONTENT_WIDTH,
+  EVENT_KEY_FOCUS_AI,
+  EVENT_KEY_AI_EDIT,
+} from "@/constants";
 
 import emitter from "@/lib/emitter";
 import { send } from "./api";
@@ -32,9 +36,11 @@ export default function AIIsland() {
     }
     if (key === "Escape") {
       inputRef.current?.blur();
+      emitter.emit(EVENT_KEY_AI_EDIT, { type: "focus" });
     }
     if (key === "Backspace" && !instruction) {
       inputRef.current?.blur();
+      emitter.emit(EVENT_KEY_AI_EDIT, { type: "focus" });
     }
   }
 

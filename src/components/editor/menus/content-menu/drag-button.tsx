@@ -1,6 +1,5 @@
 import { useCallback, useState, useEffect } from "react";
-import { Editor } from "@tiptap/core";
-import { Node } from "@tiptap/pm/model";
+
 import { NodeSelection } from "@tiptap/pm/state";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,14 +16,9 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { IButtonProps } from "./types";
 
-interface DragButtonProps {
-  editor: Editor | null;
-  currentNode: Node | null;
-  currentNodePos: number;
-}
-
-export default function DragButton(props: DragButtonProps) {
+export default function DragButton(props: IButtonProps) {
   const { editor, currentNode, currentNodePos } = props;
   const { toast } = useToast();
 
@@ -89,7 +83,7 @@ export default function DragButton(props: DragButtonProps) {
   return (
     <Popover open={menuOpen} onOpenChange={setMenuOpen}>
       <PopoverTrigger asChild>
-        <Button size="sm" variant="ghost">
+        <Button size="sm" variant="ghost" tabIndex={-1} className="px-1">
           <GripVertical className="h-4 w-4" />
         </Button>
       </PopoverTrigger>

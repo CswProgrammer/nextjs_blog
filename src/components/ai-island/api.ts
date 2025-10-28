@@ -5,6 +5,10 @@ const ORIGIN = process.env.NEXT_PUBLIC_GPT_API_PROXY_ORIGIN || "";
 const TOKEN = process.env.NEXT_PUBLIC_GPT_API_PROXY_AUTH_TOKEN || "";
 
 //这就是拼接url的函数
+function sanitize(str: string) {
+  return str.replace(/[\uD800-\uDFFF]/g, "");
+}
+
 function genUrl(instruction: string) {
   let url = "/api/gpt/chat?a=1";
 
@@ -15,9 +19,16 @@ function genUrl(instruction: string) {
   const option = {
     messages: [{ role: "user", content: instruction }],
   };
-  const optionStr = JSON.stringify(option);
 
-  url = url + `&option=${encodeURIComponent(optionStr)}`;
+  let optionStr = JSON.stringify(option);
+  optionStr = sanitize(optionStr);
+
+  try {
+    url = url + `&option=${encodeURIComponent(optionStr)}`;
+  } catch (e) {
+    console.error("encodeURIComponent 出错，原始字符串：", optionStr);
+    throw e;
+  }
 
   return url;
 }
@@ -45,6 +56,8 @@ export function send(instruction: string, callback: () => void) {
 
     const data = event.data || "";
     if (data === "[DONE]") {
+      emitter.emit(EVENT_KEY_AI_EDIT, { type: "enter" });
+
       es.close();
       // 结束时调用回调函数
       callback();
@@ -56,7 +69,14 @@ export function send(instruction: string, callback: () => void) {
       console.log("🔍 解析后的对象：", obj); // 🧩 再加这一行
 
       // const content = obj.choices?.[0]?.delta?.content;
-      const content = obj.c ?? obj.content ?? obj.choices?.[0]?.delta?.content;
+      const content =
+        obj.c ??
+        obj.content ??
+        obj.choices?.[0]?.delta?.content
+          .replace(/[\uD800-\uDFFF]/g, "") // 🚫 去掉非法代理对字符
+          .replace(/\r\n|\r|\n/g, " ") // 去掉换行
+          .replace(/"/g, '\\"') // 转义双引号
+          .trim();
       console.log("🔍 拿到的 content：", content); // 🧩 再加这一行
 
       // if (content == null) {
@@ -69,11 +89,14 @@ export function send(instruction: string, callback: () => void) {
         // 没有内容就跳过，但继续接收下一条
         console.log("🔍 content 为空，跳过");
 
+        //换行
+        emitter.emit(EVENT_KEY_AI_EDIT, { type: "enter" });
+
         return;
       }
       console.log("🔍 即将写入编辑器", content); // 🔍 新增调试
 
-      emitter.emit(EVENT_KEY_AI_EDIT, { content });
+      emitter.emit(EVENT_KEY_AI_EDIT, { type: "insert", content }); // 写入到编辑器
     } catch (err) {
       console.error("🔍 浏览器解析数据错误", err);
       es.close();

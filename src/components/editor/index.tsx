@@ -53,14 +53,24 @@ const TiptapEditor = (props: IProps) => {
     function handler(payload: any) {
       if (editor == null) return;
 
-      const { content = "" } = payload || {};
-      if (!content) return;
-
+      const { content = "", type = "" } = payload || {};
+      if (!content && !type) return;
       // 🔧 新增调试：确认事件到达
       console.log("🔍 编辑器收到事件", payload);
 
       // 🔧 真正插入
-      editor.commands.insertContent(content);
+      if (type === "insert") {
+        editor.commands.insertContent(content);
+        return;
+      }
+      if (type === "enter") {
+        editor.commands.enter();
+        return;
+      }
+      if (type === "focus") {
+        editor.commands.focus();
+        return;
+      }
     }
 
     emitter.on(EVENT_KEY_AI_EDIT, handler);
