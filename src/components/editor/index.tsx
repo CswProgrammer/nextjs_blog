@@ -4,11 +4,14 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import TextMenu from "./menus/text-menu";
 import { extensions } from "./extensions";
 import ContentMenu from "./menus/content-menu";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+
 import ColumnsMenu from "./menus/columns-menu";
 import LinkMenu from "./menus/link-menu";
 import ImageBlockMenu from "./menus/image-block-menu";
 import { TableRowMenu, TableColMenu } from "./menus/table-menu";
+import emitter from "@/lib/emitter";
+import { EVENT_KEY_AI_EDIT } from "@/constants";
 
 interface IProps {
   rawContent: string;
@@ -44,6 +47,19 @@ const TiptapEditor = (props: IProps) => {
       },
     },
   });
+
+  // 监听 AI island 事件
+  useEffect(() => {
+    function handler(payload: any) {
+      if (editor == null) return;
+      const { content = "" } = payload || {};
+      if (!content) return;
+
+      editor.commands.insertContent(content);
+    }
+    emitter.on(EVENT_KEY_AI_EDIT, handler);
+    return () => emitter.off(EVENT_KEY_AI_EDIT, handler); // 及时清除自定义事件
+  }, [editor]);
 
   return (
     <div ref={menuContainerRef}>
