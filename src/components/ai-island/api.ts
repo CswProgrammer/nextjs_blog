@@ -4,6 +4,7 @@ import { EVENT_KEY_AI_EDIT } from "@/constants"; // 在这里获取内容宽度�
 const ORIGIN = process.env.NEXT_PUBLIC_GPT_API_PROXY_ORIGIN || "";
 const TOKEN = process.env.NEXT_PUBLIC_GPT_API_PROXY_AUTH_TOKEN || "";
 
+//这就是拼接url的函数
 function genUrl(instruction: string) {
   let url = "/api/gpt/chat?a=1";
 
@@ -21,12 +22,18 @@ function genUrl(instruction: string) {
   return url;
 }
 
+// 这是发送请求并处理 SSE 流的函数
+//这里的callback是结束时的回调函数
+//回调函数没有参数也没有返回值，只是通知调用者“结束了”
 export function send(instruction: string, callback: () => void) {
-  if (!instruction) return;
-
+  if (!instruction.trim()) {
+    callback();
+    return;
+  }
   const url = genUrl(instruction);
   console.log("🔍 浏览器即将连接 EventSource", url); // 🔍 新增调试
 
+  //EventSource 用于接收服务器发送的事件流
   const es = new EventSource(url);
 
   // 🔍 新增调试：连接生命周期
@@ -39,6 +46,7 @@ export function send(instruction: string, callback: () => void) {
     const data = event.data || "";
     if (data === "[DONE]") {
       es.close();
+      // 结束时调用回调函数
       callback();
       return;
     }
@@ -47,6 +55,7 @@ export function send(instruction: string, callback: () => void) {
       const obj = JSON.parse(data);
       console.log("🔍 解析后的对象：", obj); // 🧩 再加这一行
 
+      // const content = obj.choices?.[0]?.delta?.content;
       const content = obj.c ?? obj.content ?? obj.choices?.[0]?.delta?.content;
       console.log("🔍 拿到的 content：", content); // 🧩 再加这一行
 

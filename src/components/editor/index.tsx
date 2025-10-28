@@ -11,7 +11,7 @@ import LinkMenu from "./menus/link-menu";
 import ImageBlockMenu from "./menus/image-block-menu";
 import { TableRowMenu, TableColMenu } from "./menus/table-menu";
 import emitter from "@/lib/emitter";
-import { EVENT_KEY_AI_EDIT } from "@/constants";
+import { EVENT_KEY_AI_EDIT, EVENT_KEY_FOCUS_AI } from "@/constants";
 
 interface IProps {
   rawContent: string;
@@ -65,6 +65,24 @@ const TiptapEditor = (props: IProps) => {
 
     emitter.on(EVENT_KEY_AI_EDIT, handler);
     return () => emitter.off(EVENT_KEY_AI_EDIT, handler); // 及时清除自定义事件
+  }, [editor]);
+
+  // 监听空格输入，focus AI island
+  useEffect(() => {
+    if (editor == null) return;
+    function fn(event: KeyboardEvent) {
+      if (event.key !== " " && event.code !== "Tab") return;
+      if (editor == null) return;
+      const selection = editor.state.selection;
+      if (!selection.empty) return;
+      const node = selection.$anchor.node();
+      if (node && node.isTextblock && node.textContent.trim() === "") {
+        event.preventDefault();
+        emitter.emit(EVENT_KEY_FOCUS_AI);
+      }
+    }
+    editor.view.dom.addEventListener("keydown", fn);
+    return () => editor.view.dom.removeEventListener("keydown", fn);
   }, [editor]);
 
   return (
