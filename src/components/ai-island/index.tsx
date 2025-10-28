@@ -1,33 +1,53 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, CornerDownLeft, MoveUpRight } from "lucide-react";
+import {
+  Sparkles,
+  MoveUpRight,
+  SquareArrowUp,
+  LoaderCircle,
+} from "lucide-react";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CONTENT_WIDTH, EVENT_KEY_AI_EDIT } from "@/constants"; // 在这里获取内容宽度，不要直接使用数字
 import emitter from "@/lib/emitter";
+import { send } from "./api";
 
 export default function AIIsland() {
+  const [loading, setLoading] = useState(false);
   const [instruction, setInstruction] = useState("");
 
   function handleClick() {
-    emitter.emit(EVENT_KEY_AI_EDIT, { content: instruction });
-    setInstruction("");
+    if (loading) return;
+    setLoading(true);
+    send(instruction, () => {
+      setLoading(false);
+      setInstruction("");
+    });
   }
 
   return (
     <div
       className={`
-      absolute bottom-6 w-[${CONTENT_WIDTH}px] left-1/2 ml-[-${CONTENT_WIDTH / 2}px]
+      absolute bottom-6 
       rounded-2xl p-2 pl-4 border shadow bg-background
       flex items-center justify-start
       `}
+      style={{
+        width: `${CONTENT_WIDTH}px`,
+        marginLeft: `-${CONTENT_WIDTH / 2}px`,
+        left: "50%",
+      }}
     >
       <Sparkles size={24} />
       <div className="flex-auto flex items-center justify-start">
         <Input
           placeholder="请输入 AI 指令，如：根据标题写大纲"
           value={instruction}
+          onKeyDown={(e) => {
+            e.key === "Enter" && handleClick();
+          }}
           onChange={(e) => setInstruction(e.target.value)}
           className="text-base bg-inherit border-none focus-visible:ring-offset-0 focus-visible:ring-0"
         />
@@ -38,7 +58,8 @@ export default function AIIsland() {
           onClick={handleClick}
           disabled={!instruction}
         >
-          <CornerDownLeft size={24} />
+          {!loading && <SquareArrowUp size={24} />}
+          {loading && <LoaderCircle size={24} className="animate-spin" />}{" "}
         </Button>
       </div>
       <div className="ml-6 opacity-50">

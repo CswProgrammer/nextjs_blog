@@ -1,6 +1,7 @@
 import Content from "./(content)/content";
 import { getDoc } from "./action";
-import AIIsland from "@/components/ai-island";
+import AIIsland from "@/components/ai-island/index";
+
 import { CONTENT_WIDTH } from "@/constants";
 
 export default async function BlogWork({ params }: { params: { id: string } }) {

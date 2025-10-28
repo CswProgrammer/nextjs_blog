@@ -52,11 +52,17 @@ const TiptapEditor = (props: IProps) => {
   useEffect(() => {
     function handler(payload: any) {
       if (editor == null) return;
+
       const { content = "" } = payload || {};
       if (!content) return;
 
+      // 🔧 新增调试：确认事件到达
+      console.log("🔍 编辑器收到事件", payload);
+
+      // 🔧 真正插入
       editor.commands.insertContent(content);
     }
+
     emitter.on(EVENT_KEY_AI_EDIT, handler);
     return () => emitter.off(EVENT_KEY_AI_EDIT, handler); // 及时清除自定义事件
   }, [editor]);
