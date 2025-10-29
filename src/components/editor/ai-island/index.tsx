@@ -1,26 +1,35 @@
 "use client";
 import { Editor } from "@tiptap/react";
 
-import { useState, useRef, useEffect } from "react";
-
-import {
-  Sparkles,
-  MoveUpRight,
-  CornerDownLeft,
-  LoaderCircle,
-} from "lucide-react";
-
+import { useState, useRef, useEffect, useMemo } from "react";
+import { Sparkles, CornerDownLeft, LoaderCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CONTENT_WIDTH } from "@/constants";
-
+import {
+  CONTENT_WIDTH,
+  EVENT_KEY_FOCUS_AI,
+  AI_CONTEXT_MAX_LENGTH,
+} from "@/constants";
+import emitter from "@/lib/emitter";
 import { send } from "./api";
 import { cn } from "@/lib/utils";
-import { MessagesType, genSystemMessage } from "./messages";
+import {
+  MessagesType,
+  genSystemMessage,
+  genSelectedContentMessages,
+} from "./messages";
+
 import ContinueMenu from "./menus/continue-menu";
 import BrainStormMenu from "./menus/brain-storm-menu";
 import OutlineMenu from "./menus/outline-menu";
 import SummaryMenu from "./menus/summary-menu";
+import ResultPanel from "./result-panel";
+import MakeLongerMenu from "./menus/make-longer-menu";
+import MakeShorterMenu from "./menus/make-shorter-menu";
+import FixSyntaxMenu from "./menus/fix-syntax-menu";
+import ChangeToneMenu from "./menus/change-tone-menu";
+import TranslateMenu from "./menus/translate-menu";
+import ExplainMenu from "./menus/explain-menu";
 
 export default function AIIsland(props: { editor: Editor | null }) {
   const { editor } = props;
@@ -28,14 +37,22 @@ export default function AIIsland(props: { editor: Editor | null }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocus, setIsFocus] = useState(false);
   const [instruction, setInstruction] = useState("");
+  const [isSelectionEmpty, setIsSelectionEmpty] = useState(true);
+  const [AIResult, setAIResult] = useState("");
 
   function genMessages(instruction: string): MessagesType {
-    const messages: MessagesType = [];
+    let messages: MessagesType = [];
+
     if (!instruction.trim()) return messages;
+    if (editor == null) return messages;
 
     // system message
     messages.push(genSystemMessage());
 
+    // selected content message
+    if (!isSelectionEmpty) {
+      messages = messages.concat(genSelectedContentMessages(editor));
+    }
     // current message
     messages.push({ role: "user", content: instruction });
 
@@ -69,6 +86,12 @@ export default function AIIsland(props: { editor: Editor | null }) {
     if (!inputRef.current) return;
     function handleFocus() {
       setIsFocus(true);
+      setAIResult("");
+
+      // 判断是否有选中内容
+      if (editor == null) return;
+      const { empty } = editor.state.selection;
+      setIsSelectionEmpty(empty);
     }
     function handleBlur() {
       setTimeout(() => setIsFocus(false), 150);
@@ -106,6 +129,8 @@ export default function AIIsland(props: { editor: Editor | null }) {
   function requestAI(messages: MessagesType) {
     if (loading) return;
     setLoading(true);
+    setAIResult("");
+
     inputRef.current?.blur();
     // 发送请求
     send(
@@ -115,29 +140,53 @@ export default function AIIsland(props: { editor: Editor | null }) {
 
       (content: string) => {
         if (!content) return;
-        if (content.indexOf("\n") < 0) {
-          // 没有换行符，直接插入内容
-          editor?.commands.insertContent(content);
-          return;
-        }
-        // 有换行符，则需要考虑换行
-        const arr = content.split("\n");
-        arr.forEach((c, index) => {
-          if (c) editor?.commands.insertContent(c);
-
-          if (index < arr.length - 1) {
-            editor?.commands.enter(); // 换行
+        if (isSelectionEmpty) {
+          // 未选中内容，直接插入到编辑器中
+          if (content.indexOf("\n") < 0) {
+            // 没有换行符，直接插入内容
+            editor?.commands.insertContent(content);
+            return;
           }
-        });
+          // 有换行符，则需要考虑换行
+          const arr = content.split("\n");
+          arr.forEach((c, index) => {
+            if (c) editor?.commands.insertContent(c);
+            if (index < arr.length - 1) {
+              editor?.commands.enter(); // 换行
+            }
+          });
+        } else {
+          // 有选中内容，则另外显示
+          setAIResult((r) => r + content);
+        }
       },
       (done: boolean) => {
         setLoading(false);
-        setInstruction("");
-        if (done) editor?.commands.enter();
-        editor?.commands.focus();
+        if (isSelectionEmpty) {
+          setInstruction("");
+          if (done) editor?.commands.enter();
+          editor?.commands.focus();
+        }
       },
     );
   }
+
+  // 监听编辑器 text-menu 中 Ask AI 菜单按钮
+  useEffect(() => {
+    function fn() {
+      if (isFocus) return;
+      inputRef.current?.focus();
+    }
+    emitter.on(EVENT_KEY_FOCUS_AI, fn);
+    return () => emitter.off(EVENT_KEY_FOCUS_AI, fn); // 及时清除自定义事件
+  }, [inputRef, isFocus]);
+
+  // placeholder
+  const placeholder = useMemo(() => {
+    if (!isFocus) return "使用 AI 写作";
+    if (isSelectionEmpty) return "输入 AI 指令，如：根据标题写大纲";
+    else return "针对选中内容，输入 AI 指令，如：扩展一下这段内容";
+  }, [isFocus, isSelectionEmpty]);
 
   if (!editor) return null;
 
@@ -150,8 +199,19 @@ export default function AIIsland(props: { editor: Editor | null }) {
         left: "50%",
       }}
     >
-      {isFocus && !loading && (
-        <div className="ml-11">
+      {/* 显示 AI 输出结果 （当有选中内容时，不直接插入到编辑器） */}
+      {AIResult && (
+        <ResultPanel
+          editor={editor}
+          loading={loading}
+          result={AIResult}
+          setResult={setAIResult}
+          setInstruction={setInstruction}
+        />
+      )}
+      {/* AI 菜单，isSelectionEmpty 时 */}
+      {isFocus && !loading && isSelectionEmpty && !AIResult && (
+        <div className="flex justify-center">
           <ContinueMenu
             editor={editor}
             onRequestAI={requestAI}
@@ -174,6 +234,42 @@ export default function AIIsland(props: { editor: Editor | null }) {
           />
         </div>
       )}
+      {/* AI 菜单，isSelectionEmpty === false 时 */}
+      {isFocus && !loading && !isSelectionEmpty && !AIResult && (
+        <div className="flex justify-center">
+          <MakeLongerMenu
+            editor={editor}
+            onRequestAI={requestAI}
+            setInstruction={setInstruction}
+          />
+          <MakeShorterMenu
+            editor={editor}
+            onRequestAI={requestAI}
+            setInstruction={setInstruction}
+          />
+          <ChangeToneMenu
+            editor={editor}
+            onRequestAI={requestAI}
+            setInstruction={setInstruction}
+          />
+          <TranslateMenu
+            editor={editor}
+            onRequestAI={requestAI}
+            setInstruction={setInstruction}
+          />
+          <ExplainMenu
+            editor={editor}
+            onRequestAI={requestAI}
+            setInstruction={setInstruction}
+          />
+          <FixSyntaxMenu
+            editor={editor}
+            onRequestAI={requestAI}
+            setInstruction={setInstruction}
+          />
+        </div>
+      )}
+      {/* AI 指令输入框 */}
       <div
         className={cn(
           "rounded-2xl p-2 pl-4 border shadow flex items-center justify-start",
@@ -190,7 +286,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
 
         <div className="flex-auto flex items-center justify-start">
           <Input
-            placeholder="请输入 AI 指令，如：根据标题写大纲"
+            placeholder={placeholder}
             value={instruction}
             maxLength={300}
             disabled={loading}

@@ -17,6 +17,7 @@ import ImageBlock from "./image-block";
 import { ImageUpload } from "./image-upload";
 import { uploadImageAPI } from "@/components/editor/utils/api";
 import { Table, TableCell, TableRow, TableHeader } from "./table/index";
+import Selection from "./selection";
 
 export const extensions = [
   Document,
@@ -80,4 +81,5 @@ export const extensions = [
     width: 2,
     class: "ProseMirror-dropcursor border-black",
   }),
+  Selection,
 ];

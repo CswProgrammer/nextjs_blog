@@ -27,6 +27,7 @@ export default function MoreMenu(props: IProps) {
           size="sm"
           onClick={() => editor.chain().focus().toggleStrike().run()}
           variant={editor.isActive("strike") ? "secondary" : "ghost"}
+          tabIndex={-1}
         >
           <Strikethrough className="h-4 w-4" />
         </Button>
@@ -34,6 +35,7 @@ export default function MoreMenu(props: IProps) {
           size="sm"
           onClick={() => editor.chain().focus().toggleSuperscript().run()}
           variant={editor.isActive("superscript") ? "secondary" : "ghost"}
+          tabIndex={-1}
         >
           <Superscript className="h-4 w-4" />
         </Button>
@@ -41,6 +43,7 @@ export default function MoreMenu(props: IProps) {
           size="sm"
           onClick={() => editor.chain().focus().toggleSubscript().run()}
           variant={editor.isActive("subscript") ? "secondary" : "ghost"}
+          tabIndex={-1}
         >
           <Subscript className="h-4 w-4" />
         </Button>

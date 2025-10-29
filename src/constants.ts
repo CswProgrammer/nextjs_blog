@@ -7,9 +7,8 @@ export const EVENT_KEY_DEL_DOC = "E_K_DEL_DOC";
 export const EVENT_KEY_CHANGE_UPDATING = "E_K_CHANGE_UPDATING";
 export const EVENT_KEY_CHANGE_IS_STAR = "E_K_CHANGE_IS_STAR";
 export const EVENT_KEY_AI_EDIT = "E_K_AI_EDIT";
-export const EVENT_KEY_FOCUS_AI = "E_K_FOCUS_AI";
 
 export const DOC_TITLE_INPUT_ID = "DOC_TITLE_INPUT_ID";
-
-export const AI_RES_MAX_TOKENS = 500; // AI 返回结果最大长度
-export const AI_CONTEXT_MAX_LENGTH = 500; // 上下文最大长度，请求 AI 接口时
+export const AI_RES_MAX_TOKENS = 1000; // AI 返回结果最大长度
+export const AI_CONTEXT_MAX_LENGTH = 1000; // 上下文最大长度，请求 AI 接口时
+export const EVENT_KEY_FOCUS_AI = "E_K_FOCUS_AI";

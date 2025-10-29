@@ -33,6 +33,7 @@ export default function AlignMenu(props: IProps) {
           variant={
             editor.isActive({ textAlign: "left" }) ? "secondary" : "ghost"
           }
+          tabIndex={-1}
         >
           <AlignLeft className="h-4 w-4" />
         </Button>
@@ -42,6 +43,7 @@ export default function AlignMenu(props: IProps) {
           variant={
             editor.isActive({ textAlign: "center" }) ? "secondary" : "ghost"
           }
+          tabIndex={-1}
         >
           <AlignCenter className="h-4 w-4" />
         </Button>
@@ -51,6 +53,7 @@ export default function AlignMenu(props: IProps) {
           variant={
             editor.isActive({ textAlign: "right" }) ? "secondary" : "ghost"
           }
+          tabIndex={-1}
         >
           <AlignRight className="h-4 w-4" />
         </Button>

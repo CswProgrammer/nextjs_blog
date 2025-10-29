@@ -10,6 +10,7 @@ import HighlightMenu from "./highlight-menu";
 import { isTextSelected } from "@/components/editor/utils/isTextSelected";
 import Wrapper from "../bubble-menu-wrapper";
 import SetLinkMenu from "./set-link-menu";
+import AIMenu from "./ai-menu";
 
 interface IProps {
   editor: Editor | null;
@@ -42,6 +43,8 @@ export default function TextMenu(props: IProps) {
       shouldShow={() => shouldShow(editor)}
     >
       <Wrapper>
+        <AIMenu editor={editor} />
+
         <ContentTypeMenu editor={editor} />
         <BasicMenu editor={editor} />
         <SetLinkMenu editor={editor} />

@@ -69,6 +69,7 @@ function ColorPanel(props: IProps) {
           onClick={() =>
             editor.chain().focus().setHighlight({ color: item.color }).run()
           }
+          tabIndex={-1}
         >
           {item.name}
         </Button>
@@ -78,6 +79,7 @@ function ColorPanel(props: IProps) {
         variant="outline"
         size="sm"
         onClick={() => editor.chain().focus().unsetHighlight().run()}
+        tabIndex={-1}
       >
         清空
       </Button>
