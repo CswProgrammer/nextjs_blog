@@ -5,11 +5,8 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { Sparkles, CornerDownLeft, LoaderCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  CONTENT_WIDTH,
-  EVENT_KEY_FOCUS_AI,
-  AI_CONTEXT_MAX_LENGTH,
-} from "@/constants";
+import { CONTENT_WIDTH, EVENT_KEY_FOCUS_AI } from "@/constants";
+
 import emitter from "@/lib/emitter";
 import { send } from "./api";
 import { cn } from "@/lib/utils";
@@ -19,17 +16,12 @@ import {
   genSelectedContentMessages,
 } from "./messages";
 
-import ContinueMenu from "./menus/continue-menu";
-import BrainStormMenu from "./menus/brain-storm-menu";
-import OutlineMenu from "./menus/outline-menu";
-import SummaryMenu from "./menus/summary-menu";
+import {
+  MenusWhenSelectionIsEmpty,
+  MenusWhenSelectionIsNotEmpty,
+} from "./menus";
+
 import ResultPanel from "./result-panel";
-import MakeLongerMenu from "./menus/make-longer-menu";
-import MakeShorterMenu from "./menus/make-shorter-menu";
-import FixSyntaxMenu from "./menus/fix-syntax-menu";
-import ChangeToneMenu from "./menus/change-tone-menu";
-import TranslateMenu from "./menus/translate-menu";
-import ExplainMenu from "./menus/explain-menu";
 
 export default function AIIsland(props: { editor: Editor | null }) {
   const { editor } = props;
@@ -211,63 +203,19 @@ export default function AIIsland(props: { editor: Editor | null }) {
       )}
       {/* AI 菜单，isSelectionEmpty 时 */}
       {isFocus && !loading && isSelectionEmpty && !AIResult && (
-        <div className="flex justify-center">
-          <ContinueMenu
-            editor={editor}
-            onRequestAI={requestAI}
-            setInstruction={setInstruction}
-          />
-          <BrainStormMenu
-            editor={editor}
-            onRequestAI={requestAI}
-            setInstruction={setInstruction}
-          />
-          <OutlineMenu
-            editor={editor}
-            onRequestAI={requestAI}
-            setInstruction={setInstruction}
-          />
-          <SummaryMenu
-            editor={editor}
-            onRequestAI={requestAI}
-            setInstruction={setInstruction}
-          />
-        </div>
+        <MenusWhenSelectionIsEmpty
+          editor={editor}
+          onRequestAI={requestAI}
+          setInstruction={setInstruction}
+        />
       )}
       {/* AI 菜单，isSelectionEmpty === false 时 */}
       {isFocus && !loading && !isSelectionEmpty && !AIResult && (
-        <div className="flex justify-center">
-          <MakeLongerMenu
-            editor={editor}
-            onRequestAI={requestAI}
-            setInstruction={setInstruction}
-          />
-          <MakeShorterMenu
-            editor={editor}
-            onRequestAI={requestAI}
-            setInstruction={setInstruction}
-          />
-          <ChangeToneMenu
-            editor={editor}
-            onRequestAI={requestAI}
-            setInstruction={setInstruction}
-          />
-          <TranslateMenu
-            editor={editor}
-            onRequestAI={requestAI}
-            setInstruction={setInstruction}
-          />
-          <ExplainMenu
-            editor={editor}
-            onRequestAI={requestAI}
-            setInstruction={setInstruction}
-          />
-          <FixSyntaxMenu
-            editor={editor}
-            onRequestAI={requestAI}
-            setInstruction={setInstruction}
-          />
-        </div>
+        <MenusWhenSelectionIsNotEmpty
+          editor={editor}
+          onRequestAI={requestAI}
+          setInstruction={setInstruction}
+        />
       )}
       {/* AI 指令输入框 */}
       <div
