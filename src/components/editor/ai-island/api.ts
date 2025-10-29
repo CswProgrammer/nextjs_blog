@@ -1,3 +1,6 @@
+import { AI_RES_MAX_TOKENS } from "@/constants";
+import { MessagesType } from "./messages";
+
 const ORIGIN = process.env.NEXT_PUBLIC_GPT_API_PROXY_ORIGIN || "";
 const TOKEN = process.env.NEXT_PUBLIC_GPT_API_PROXY_AUTH_TOKEN || "";
 
@@ -6,7 +9,7 @@ function sanitize(str: string) {
   return str.replace(/[\uD800-\uDFFF]/g, "");
 }
 
-function genUrl(instruction: string) {
+function genUrl(messages: MessagesType) {
   let url = "/api/gpt/chat?a=1";
 
   if (ORIGIN) {
@@ -14,7 +17,8 @@ function genUrl(instruction: string) {
   }
 
   const option = {
-    messages: [{ role: "user", content: instruction }],
+    messages,
+    max_tokens: AI_RES_MAX_TOKENS,
   };
 
   let optionStr = JSON.stringify(option);
@@ -34,16 +38,18 @@ function genUrl(instruction: string) {
 //这里的callback是结束时的回调函数
 //回调函数没有参数也没有返回值，只是通知调用者“结束了”
 export function send(
-  instruction: string,
+  messages: MessagesType,
   onData: (content: string) => void,
   callback: (done: boolean) => void,
 ) {
-  if (!instruction.trim()) {
+  // console.log('messages', messages)
+  if (!messages || messages.length === 0) {
     callback(false);
 
     return;
   }
-  const url = genUrl(instruction);
+  const url = genUrl(messages);
+
   console.log("🔍 浏览器即将连接 EventSource", url); // 🔍 新增调试
 
   //EventSource 用于接收服务器发送的事件流
