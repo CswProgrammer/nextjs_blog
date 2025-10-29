@@ -1,6 +1,3 @@
-import emitter from "@/lib/emitter";
-import { EVENT_KEY_AI_EDIT } from "@/constants"; // 在这里获取内容宽度，不要直接使用数字
-
 const ORIGIN = process.env.NEXT_PUBLIC_GPT_API_PROXY_ORIGIN || "";
 const TOKEN = process.env.NEXT_PUBLIC_GPT_API_PROXY_AUTH_TOKEN || "";
 
@@ -36,9 +33,14 @@ function genUrl(instruction: string) {
 // 这是发送请求并处理 SSE 流的函数
 //这里的callback是结束时的回调函数
 //回调函数没有参数也没有返回值，只是通知调用者“结束了”
-export function send(instruction: string, callback: () => void) {
+export function send(
+  instruction: string,
+  onData: (content: string) => void,
+  callback: (done: boolean) => void,
+) {
   if (!instruction.trim()) {
-    callback();
+    callback(false);
+
     return;
   }
   const url = genUrl(instruction);
@@ -56,11 +58,9 @@ export function send(instruction: string, callback: () => void) {
 
     const data = event.data || "";
     if (data === "[DONE]") {
-      emitter.emit(EVENT_KEY_AI_EDIT, { type: "enter" });
-
       es.close();
       // 结束时调用回调函数
-      callback();
+      callback(true);
       return;
     }
 
@@ -90,17 +90,18 @@ export function send(instruction: string, callback: () => void) {
         console.log("🔍 content 为空，跳过");
 
         //换行
-        emitter.emit(EVENT_KEY_AI_EDIT, { type: "enter" });
+        callback(true);
 
         return;
       }
       console.log("🔍 即将写入编辑器", content); // 🔍 新增调试
 
-      emitter.emit(EVENT_KEY_AI_EDIT, { type: "insert", content }); // 写入到编辑器
+      onData(content); // 写入到编辑器
     } catch (err) {
       console.error("🔍 浏览器解析数据错误", err);
       es.close();
-      callback();
+      callback(false);
+
       return;
     }
   };

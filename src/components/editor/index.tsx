@@ -4,14 +4,12 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import TextMenu from "./menus/text-menu";
 import { extensions } from "./extensions";
 import ContentMenu from "./menus/content-menu";
-import { useEffect, useRef } from "react";
-
+import { useRef } from "react";
 import ColumnsMenu from "./menus/columns-menu";
 import LinkMenu from "./menus/link-menu";
 import ImageBlockMenu from "./menus/image-block-menu";
 import { TableRowMenu, TableColMenu } from "./menus/table-menu";
-import emitter from "@/lib/emitter";
-import { EVENT_KEY_AI_EDIT, EVENT_KEY_FOCUS_AI } from "@/constants";
+import AIIsland from "./ai-island";
 
 interface IProps {
   rawContent: string;
@@ -48,64 +46,20 @@ const TiptapEditor = (props: IProps) => {
     },
   });
 
-  // 监听 AI island 事件
-  useEffect(() => {
-    function handler(payload: any) {
-      if (editor == null) return;
-
-      const { content = "", type = "" } = payload || {};
-      if (!content && !type) return;
-      // 🔧 新增调试：确认事件到达
-      console.log("🔍 编辑器收到事件", payload);
-
-      // 🔧 真正插入
-      if (type === "insert") {
-        editor.commands.insertContent(content);
-        return;
-      }
-      if (type === "enter") {
-        editor.commands.enter();
-        return;
-      }
-      if (type === "focus") {
-        editor.commands.focus();
-        return;
-      }
-    }
-
-    emitter.on(EVENT_KEY_AI_EDIT, handler);
-    return () => emitter.off(EVENT_KEY_AI_EDIT, handler); // 及时清除自定义事件
-  }, [editor]);
-
-  // 监听空格输入，focus AI island
-  useEffect(() => {
-    if (editor == null) return;
-    function fn(event: KeyboardEvent) {
-      if (event.key !== " " && event.code !== "Tab") return;
-      if (editor == null) return;
-      const selection = editor.state.selection;
-      if (!selection.empty) return;
-      const node = selection.$anchor.node();
-      if (node && node.isTextblock && node.textContent.trim() === "") {
-        event.preventDefault();
-        emitter.emit(EVENT_KEY_FOCUS_AI);
-      }
-    }
-    editor.view.dom.addEventListener("keydown", fn);
-    return () => editor.view.dom.removeEventListener("keydown", fn);
-  }, [editor]);
-
   return (
-    <div ref={menuContainerRef}>
-      <EditorContent editor={editor} />
-      <ContentMenu editor={editor} />
-      <TextMenu editor={editor} />
-      <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
-      <LinkMenu editor={editor} appendTo={menuContainerRef} />
-      <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
-      <TableRowMenu editor={editor} appendTo={menuContainerRef} />
-      <TableColMenu editor={editor} appendTo={menuContainerRef} />
-    </div>
+    <>
+      <div ref={menuContainerRef}>
+        <EditorContent editor={editor} />
+        <ContentMenu editor={editor} />
+        <TextMenu editor={editor} />
+        <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
+        <LinkMenu editor={editor} appendTo={menuContainerRef} />
+        <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
+        <TableRowMenu editor={editor} appendTo={menuContainerRef} />
+        <TableColMenu editor={editor} appendTo={menuContainerRef} />
+      </div>
+      <AIIsland editor={editor} />
+    </>
   );
 };
 

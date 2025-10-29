@@ -1,6 +1,6 @@
 import Content from "./(content)/content";
 import { getDoc } from "./action";
-import AIIsland from "@/components/ai-island/index";
+import AIIsland from "@/components/editor/ai-island/index";
 
 import { CONTENT_WIDTH } from "@/constants";
 
@@ -13,20 +13,12 @@ export default async function BlogWork({ params }: { params: { id: string } }) {
   const fullWidth = CONTENT_WIDTH + 80; // 两边留白 40px
 
   return (
-    <>
-      <div
-        className={`mx-auto my-10 mb-52`}
-        style={{ width: `${fullWidth}px` }}
-      >
-        <Content
-          defaultId={id}
-          defaultTitle={title}
-          defaultContent={content}
-          defaultNotFound={notFound}
-          defaultIsStar={isStar}
-        />
-      </div>
-      <AIIsland />
-    </>
+    <Content
+      defaultId={id}
+      defaultTitle={title}
+      defaultContent={content}
+      defaultNotFound={notFound}
+      defaultIsStar={isStar}
+    />
   );
 }

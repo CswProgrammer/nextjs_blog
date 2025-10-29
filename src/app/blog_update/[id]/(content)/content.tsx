@@ -12,6 +12,7 @@ import {
   EVENT_KEY_CREATE_DOC,
   EVENT_KEY_CHANGE_UPDATING,
   EVENT_KEY_CHANGE_IS_STAR,
+  CONTENT_WIDTH,
 } from "@/constants";
 import { get } from "@/lib/ajax";
 
@@ -151,8 +152,10 @@ export default function Content(props: IProps) {
     );
   }
 
+  const fullWidth = CONTENT_WIDTH + 80; // 两边留白 40px
+
   return (
-    <>
+    <div className={`mx-auto my-10 mb-52`} style={{ width: `${fullWidth}px` }}>
       <div className="mx-10 mb-6 pb-4 border-b">
         <Input
           placeholder="请输入标题..."
@@ -164,6 +167,6 @@ export default function Content(props: IProps) {
         {/* 可能还会再增加其他功能，例如设置 Icon 、背景等 */}
       </div>
       <TiptapEditor rawContent={editorContent} handleUpdate={handleUpdate} />
-    </>
+    </div>
   );
 }
