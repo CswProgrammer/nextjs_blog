@@ -83,11 +83,27 @@ export default function AIIsland(props: { editor: Editor | null }) {
     if (loading) return;
     setLoading(true);
     inputRef.current?.blur();
-
+    // 发送请求
     send(
       instruction,
+      // 请求中，插入内容
+
       (content: string) => {
-        editor?.commands.insertContent(content);
+        if (!content) return;
+        if (content.indexOf("\n") < 0) {
+          // 没有换行符，直接插入内容
+          editor?.commands.insertContent(content);
+          return;
+        }
+        // 有换行符，则需要考虑换行
+        const arr = content.split("\n");
+        arr.forEach((c, index) => {
+          if (!c) return;
+          editor?.commands.insertContent(c);
+          if (index < arr.length - 1) {
+            editor?.commands.enter(); // 换行
+          }
+        });
       },
       (done: boolean) => {
         setLoading(false);

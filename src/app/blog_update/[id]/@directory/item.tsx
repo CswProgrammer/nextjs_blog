@@ -43,7 +43,8 @@ export default function Item(props: IProps) {
     // 修改标题时触发事件
     if (!isCurrent) return; // 只监听当前文档
     function handler(payload: any) {
-      const newTitle = payload as string;
+      let newTitle = payload as string;
+      if (!newTitle.trim()) newTitle = "<无标题>";
       setTitle(newTitle);
     }
     emitter.on(EVENT_KEY_CHANGE_DOC_TITLE, handler);
