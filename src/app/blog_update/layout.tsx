@@ -12,5 +12,11 @@ export default async function Layout({
     return null;
   }
 
+  // @ts-ignore
+  if (!user.isInvited) {
+    redirect("/invitation-code");
+    return null;
+  }
+
   return <>{children}</>;
 }

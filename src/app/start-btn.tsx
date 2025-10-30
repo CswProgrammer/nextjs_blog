@@ -14,6 +14,19 @@ export default async function StartButton() {
       </SignInButton>
     );
   }
+
+  // @ts-ignore
+  if (!user.isInvited) {
+    return (
+      <Link href="/invitation-code">
+        <Button className="text-base" size="lg">
+          <Zap className="h-4 w-4" />
+          &nbsp;验证邀请码
+        </Button>
+      </Link>
+    );
+  }
+
   const lastDocId = (user as any).lastDocId || "";
 
   return (
