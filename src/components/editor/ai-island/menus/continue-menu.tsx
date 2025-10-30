@@ -40,7 +40,8 @@ export default function ContinueMenu(props: IProps) {
   function handleClick() {
     if (editor == null) return;
 
-    const instruction = "根据文章标题和内容，继续写作，200 字以内";
+    const instruction = "根据文章标题和内容，继续写作";
+
     const messages = genMessages(instruction);
 
     setInstruction(instruction);

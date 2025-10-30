@@ -27,6 +27,7 @@ export default function ResultPanel(props: IProps) {
         editor?.commands.enter(); // 换行
       }
     });
+    editor?.commands.scrollIntoView();
   }
   useEffect(() => {
     if (menuRef.current == null) return;

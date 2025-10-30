@@ -6,9 +6,10 @@ import { useState, useRef, useEffect } from "react";
 import { CONTENT_WIDTH, EVENT_KEY_FOCUS_AI } from "@/constants";
 
 import emitter from "@/lib/emitter";
-import { send } from "./api";
-import { MessagesType } from "./messages";
+import useRequestAI from "./useRequestAI";
+
 import CustomInput from "./custom-input";
+import Info from "./info";
 
 import {
   MenusWhenSelectionIsEmpty,
@@ -25,7 +26,18 @@ export default function AIIsland(props: { editor: Editor | null }) {
   const [instruction, setInstruction] = useState("");
   const [isSelectionEmpty, setIsSelectionEmpty] = useState(true);
   const [AIResult, setAIResult] = useState("");
+  const [tokenLimit, setTokenLimit] = useState(-1);
 
+  const { requestAI, abortRequestAI } = useRequestAI({
+    editor,
+    isSelectionEmpty,
+    loading,
+    setAIResult,
+    setLoading,
+    setInstruction,
+    tokenLimit,
+    setTokenLimit,
+  });
   // 监听 input focus blur
   useEffect(() => {
     if (!inputRef.current) return;
@@ -70,51 +82,6 @@ export default function AIIsland(props: { editor: Editor | null }) {
     editor.view.dom.addEventListener("keydown", fn);
     return () => editor.view.dom.removeEventListener("keydown", fn);
   }, [editor]);
-
-  function requestAI(messages: MessagesType) {
-    if (loading) return;
-    setLoading(true);
-    setAIResult("");
-
-    inputRef.current?.blur();
-    // 发送请求
-    send(
-      messages,
-
-      // 请求中，插入内容
-
-      (content: string) => {
-        if (!content) return;
-        if (isSelectionEmpty) {
-          // 未选中内容，直接插入到编辑器中
-          if (content.indexOf("\n") < 0) {
-            // 没有换行符，直接插入内容
-            editor?.commands.insertContent(content);
-            return;
-          }
-          // 有换行符，则需要考虑换行
-          const arr = content.split("\n");
-          arr.forEach((c, index) => {
-            if (c) editor?.commands.insertContent(c);
-            if (index < arr.length - 1) {
-              editor?.commands.enter(); // 换行
-            }
-          });
-        } else {
-          // 有选中内容，则另外显示
-          setAIResult((r) => r + content);
-        }
-      },
-      (done: boolean) => {
-        setLoading(false);
-        if (isSelectionEmpty) {
-          setInstruction("");
-          if (done) editor?.commands.enter();
-          editor?.commands.focus();
-        }
-      },
-    );
-  }
 
   // 监听编辑器 text-menu 中 Ask AI 菜单按钮
   useEffect(() => {
@@ -171,12 +138,14 @@ export default function AIIsland(props: { editor: Editor | null }) {
         editor={editor}
         isSelectionEmpty={isSelectionEmpty}
         onRequestAI={requestAI}
+        onAbortRequestAI={abortRequestAI}
         instruction={instruction}
         setInstruction={setInstruction}
       />
       <p className="text-sm text-center my-1 text-muted-foreground opacity-50">
         注意，AI 可能会生成错误信息，请自行检查判断
       </p>
+      <Info tokenLimit={tokenLimit} setTokenLimit={setTokenLimit} />
     </div>
   );
 }
