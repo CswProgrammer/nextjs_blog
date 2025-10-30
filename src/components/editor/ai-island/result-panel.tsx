@@ -74,22 +74,31 @@ export default function ResultPanel(props: IProps) {
     editor?.commands.focus();
   }
 
-  if (!result) return null;
   if (editor == null) return null;
+  if (!result && !loading) return null;
 
   return (
     <div className="border-2 border-blue-600 rounded-lg shadow p-4 pb-2 mb-2">
       <div className="max-h-72 overflow-y-auto">
-        <div>
-          {resList.map((l, index) => {
-            if (l.trim() === "") return null;
-            return (
-              <p key={index} className="text-sm my-2 first:mt-0">
-                {l}
-              </p>
-            );
-          })}
-        </div>{" "}
+        {!result && (
+          <div className="text-center">
+            <span className="text-sm text-muted-foreground">
+              AI 生成中......
+            </span>
+          </div>
+        )}
+        {result && (
+          <div>
+            {resList.map((l, index) => {
+              if (l.trim() === "") return null;
+              return (
+                <p key={index} className="text-sm my-2 first:mt-0">
+                  {l}
+                </p>
+              );
+            })}
+          </div>
+        )}
         <div className="flex justify-center mt-1" ref={menuRef}>
           {/* 处理 AI 结果的菜单：替换，插入，重新生成，取消 */}
           <Button

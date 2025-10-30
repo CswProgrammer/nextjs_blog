@@ -181,6 +181,8 @@ export default function useRequestAI(params: IParams) {
       eventSource.close();
       setEventSource(null);
       setLoading(false);
+      editor?.setEditable(true);
+
       // console.log('abort done~ ')
     }
   }
