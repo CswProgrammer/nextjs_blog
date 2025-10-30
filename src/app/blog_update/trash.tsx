@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 
 import {
@@ -40,6 +41,9 @@ export default function Trash() {
       <DialogContent className="">
         <DialogHeader>
           <DialogTitle>回收站</DialogTitle>
+          <DialogDescription>
+            注意，回收站的文档将保留 30 天，然后彻底删除
+          </DialogDescription>
         </DialogHeader>
         <TrashTable />
       </DialogContent>

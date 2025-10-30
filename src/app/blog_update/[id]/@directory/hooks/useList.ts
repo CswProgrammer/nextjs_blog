@@ -42,6 +42,9 @@ export default function useList(defaultList: IDoc[], paramId: string) {
           variant: "destructive",
           description: resData.msg || "创建失败",
         });
+        setTimeout(() => {
+          location.href = "/work/0";
+        }, 1500);
       });
     },
     [list, toast],

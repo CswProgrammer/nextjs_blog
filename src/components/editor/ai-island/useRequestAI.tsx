@@ -72,6 +72,7 @@ export default function useRequestAI(params: IParams) {
       editor?.commands.enter();
       editor?.commands.focus();
     }
+    editor?.setEditable(true);
   }
 
   function onError(msg: string) {
@@ -82,6 +83,7 @@ export default function useRequestAI(params: IParams) {
       description: msg,
       action: <ToastAction altText="知道了">知道了</ToastAction>,
     });
+    editor?.setEditable(true);
   }
 
   function requestAI(messages: MessagesType) {
@@ -98,6 +100,7 @@ export default function useRequestAI(params: IParams) {
     setAIResult("");
     // inputRef.current?.blur()
 
+    editor?.setEditable(true);
     setEventSource(null); // 重置
     const url = genGPTUrl(messages);
     const es = new EventSource(url);

@@ -6,11 +6,23 @@ import {
   genUnAuthData,
 } from "@/app/api/utils/gen-res-data";
 import { NextRequest } from "next/server";
+import { MAX_DOC_COUNT } from "@/constants";
 
 // 创建 doc
 export async function POST(request: Request) {
   const user = await getUserInfo();
   if (user == null) return Response.json(genUnAuthData());
+
+  // 当前文档数量
+  const docCount = await db.docBlog.count({
+    where: {
+      userId: user.id,
+      isDeleted: false || null,
+    },
+  });
+  if (docCount > MAX_DOC_COUNT) {
+    return Response.json(genErrorData(`最多只能创建 ${MAX_DOC_COUNT} 个文档`));
+  }
 
   const body = await request.json();
   let {
@@ -96,6 +108,11 @@ export async function GET(request: NextRequest) {
   if (isDeletedParam === "0") isDeleted = false;
   if (isDeletedParam === "1") isDeleted = true;
 
+  // 彻底删除 回收站 30 天之前的文档
+  if (isDeleted) {
+    await deleteDocsBefore30Days();
+  }
+
   // 是否收藏
   let isStarParam = searchParams.get("isStar"); // '0' 或 '1'
   let isStar: boolean | null = null;
@@ -169,4 +186,23 @@ export async function DELETE(request: NextRequest) {
     console.error("Delete docs error", ex);
     return Response.json(genErrorData("Delete docs error"));
   }
+}
+
+// 回收站 30 天之前的文档，彻底删除
+async function deleteDocsBefore30Days() {
+  const user = await getUserInfo();
+  if (user == null) return;
+
+  const now = new Date();
+  const before30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+  await db.docBlog.deleteMany({
+    where: {
+      userId: user.id,
+      isDeleted: true,
+      updatedAt: {
+        lt: before30Days,
+      },
+    },
+  });
 }
