@@ -18,6 +18,7 @@ import { ImageUpload } from "./image-upload";
 import { uploadImageAPI } from "@/components/editor/utils/api";
 import { Table, TableCell, TableRow, TableHeader } from "./table/index";
 import Selection from "./selection";
+import { CharacterCount } from "@tiptap/extension-character-count";
 
 export const extensions = [
   Document,
@@ -82,4 +83,5 @@ export const extensions = [
     class: "ProseMirror-dropcursor border-black",
   }),
   Selection,
+  CharacterCount.configure({ limit: 50000 }),
 ];

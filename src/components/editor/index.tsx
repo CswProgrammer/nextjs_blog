@@ -4,14 +4,18 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import TextMenu from "./menus/text-menu";
 import { extensions } from "./extensions";
 import ContentMenu from "./menus/content-menu";
-import { useRef } from "react";
+import { useRef, useEffect, useCallback } from "react";
+
 import ColumnsMenu from "./menus/columns-menu";
 import LinkMenu from "./menus/link-menu";
 import ImageBlockMenu from "./menus/image-block-menu";
 import { TableRowMenu, TableColMenu } from "./menus/table-menu";
 import AIIsland from "./ai-island";
+import emitter from "@/lib/emitter";
+import { EVENT_KEY_CHANGE_CHAR_COUNT } from "@/constants";
 
 interface IProps {
+  id: string;
   rawContent: string;
   handleUpdate: (content: string) => void;
 }
@@ -26,7 +30,7 @@ function gen_content(rawContent: string) {
 }
 
 const TiptapEditor = (props: IProps) => {
-  const { rawContent, handleUpdate } = props;
+  const { id, rawContent, handleUpdate } = props;
 
   const menuContainerRef = useRef(null);
 
@@ -37,6 +41,7 @@ const TiptapEditor = (props: IProps) => {
     onUpdate: ({ editor }) => {
       const data = editor.getJSON();
       handleUpdate(JSON.stringify(data));
+      updateCharacterCount();
     },
     editorProps: {
       attributes: {
@@ -45,6 +50,20 @@ const TiptapEditor = (props: IProps) => {
       },
     },
   });
+
+  const updateCharacterCount = useCallback(() => {
+    const characterCount = editor?.storage.characterCount || {
+      characters: () => 0,
+      words: () => 0,
+    };
+    emitter.emit(EVENT_KEY_CHANGE_CHAR_COUNT, {
+      count: characterCount.characters(),
+      id,
+    });
+    // characterCount.words() 可统计英文单词数量，但不适用于中文
+  }, [id, editor]);
+
+  useEffect(updateCharacterCount);
 
   return (
     <>

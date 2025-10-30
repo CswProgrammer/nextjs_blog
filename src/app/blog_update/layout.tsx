@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getUserInfo } from "@/lib/session";
+import Link from "next/link";
 
 export default async function Layout({
   children,

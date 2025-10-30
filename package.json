@@ -31,6 +31,7 @@
     "@radix-ui/react-tooltip": "1.0.7",
     "@tiptap-pro/extension-drag-handle-react": "^2.8.0",
     "@tiptap-pro/extension-file-handler": "2.8.0",
+    "@tiptap/extension-character-count": "2.4.0",
     "@tiptap/extension-dropcursor": "^2.3.0",
     "@tiptap/extension-highlight": "^2.2.4",
     "@tiptap/extension-image": "^2.2.6",

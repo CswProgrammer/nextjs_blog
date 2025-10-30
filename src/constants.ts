@@ -13,3 +13,4 @@ export const AI_RES_MAX_TOKENS = 1000; // AI 返回结果最大长度
 export const AI_CONTEXT_MAX_LENGTH = 1000; // 上下文最大长度，请求 AI 接口时
 export const EVENT_KEY_FOCUS_AI = "E_K_FOCUS_AI";
 export const AI_DEFAULT_TOKEN_LIMIT = 10000; // AI 默认 token limit
+export const EVENT_KEY_CHANGE_CHAR_COUNT = "E_K_CHANGE_CHAR_COUNT";
