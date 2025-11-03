@@ -18,7 +18,7 @@ export async function getDocList() {
     //查询未删除的文档
     where: {
       userId: user.id || "",
-      isDeleted: false || null,
+      isDeleted: false,
     },
     orderBy: {
       createdAt: "asc",

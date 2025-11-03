@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   const docCount = await db.docBlog.count({
     where: {
       userId: user.id,
-      isDeleted: false || null,
+      isDeleted: false,
     },
   });
   if (docCount > MAX_DOC_COUNT) {
@@ -104,38 +104,39 @@ export async function GET(request: NextRequest) {
 
   // 是否软删除
   const isDeletedParam = searchParams.get("isDeleted"); // '0' 或 '1'
-  let isDeleted: boolean | null = null;
-  if (isDeletedParam === "0") isDeleted = false;
-  if (isDeletedParam === "1") isDeleted = true;
-
+  let isDeletedFlag: boolean | null = null;
+  if (isDeletedParam === "0") isDeletedFlag = false;
+  if (isDeletedParam === "1") isDeletedFlag = true;
   // 彻底删除 回收站 30 天之前的文档
-  if (isDeleted) {
+  if (isDeletedFlag) {
     await deleteDocsBefore30Days();
   }
 
   // 是否收藏
   let isStarParam = searchParams.get("isStar"); // '0' 或 '1'
-  let isStar: boolean | null = null;
-  if (isStarParam === "0") isStar = false;
-  if (isStarParam === "1") isStar = true;
+  let isStarFlag: boolean | null = null;
+  if (isStarParam === "0") isStarFlag = false;
+  if (isStarParam === "1") isStarFlag = true;
 
   // 搜索关键字
   const keyword = searchParams.get("keyword") || null;
 
   // where
-  const whereOpt: any = {};
-  if (isDeleted != null) {
-    if (isDeleted) {
+  const whereOpt: any = {
+    isDeleted: false, // 默认
+  };
+  if (isDeletedFlag != null) {
+    if (isDeletedFlag) {
       whereOpt.isDeleted = true;
     } else {
-      whereOpt.isDeleted = false || null;
+      whereOpt.isDeleted = false;
     }
   }
-  if (isStar != null) {
-    if (isStar) {
+  if (isStarFlag != null) {
+    if (isStarFlag) {
       whereOpt.isStar = true;
     } else {
-      whereOpt.isStar = false || null;
+      whereOpt.isStar = false;
     }
   }
   if (keyword != null) {

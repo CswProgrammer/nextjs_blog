@@ -43,7 +43,7 @@ export default function useList(defaultList: IDoc[], paramId: string) {
           description: resData.msg || "创建失败",
         });
         setTimeout(() => {
-          location.href = "/work/0";
+          location.href = "/blog_update/0";
         }, 1500);
       });
     },

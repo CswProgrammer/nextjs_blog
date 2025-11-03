@@ -10,7 +10,8 @@ export default async function Work() {
   }
 
   const firstDoc = await db.docBlog.findFirst({
-    where: { userId: user.id, isDeleted: false || null },
+    where: { userId: user.id, isDeleted: false },
+
     orderBy: {
       updatedAt: "desc",
     },

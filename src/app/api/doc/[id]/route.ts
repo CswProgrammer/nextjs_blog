@@ -16,7 +16,7 @@ export async function GET(
 
   const { id } = params;
   const doc = await db.docBlog.findUnique({
-    where: { id, userId: user.id, isDeleted: false || null },
+    where: { id, userId: user.id, isDeleted: false },
   });
 
   return Response.json(genSuccessData(doc));

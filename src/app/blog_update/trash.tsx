@@ -96,10 +96,11 @@ function TrashTable() {
 
     const { errno, msg } = await patch("/api/doc", {
       ids,
-      data: { isDeleted: null },
+      data: { isDeleted: false },
     });
+
     if (errno === 0) {
-      router.push(`/work/${id}`);
+      router.push(`/blog_update/${id}`);
     } else {
       toast({
         variant: "destructive",

@@ -73,7 +73,7 @@ function StarListTable() {
 
   // 点击，跳转
   function handleClick(id: string) {
-    router.push("/work/" + id);
+    router.push("/blog_update/" + id);
   }
 
   if (loading) {

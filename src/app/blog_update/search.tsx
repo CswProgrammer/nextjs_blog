@@ -87,7 +87,7 @@ function SearchPanel() {
   function handleClick(doc: IDoc) {
     const { isDeleted, id } = doc;
     if (isDeleted) return;
-    router.push(`/work/${id}`);
+    router.push(`/blog_update/${id}`);
   }
 
   return (
