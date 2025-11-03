@@ -54,19 +54,20 @@ export const extensions = [
         currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run();
       });
     },
-    onPaste: (currentEditor, files) => {
-      files.forEach(async () => {
-        const url = await uploadImageAPI();
+    onPaste: (currentEditor, files, pasteContent) => {
+      if (pasteContent)
+        return files.forEach(async () => {
+          const url = await uploadImageAPI();
 
-        return currentEditor
-          .chain()
-          .setImageBlockAt({
-            pos: currentEditor.state.selection.anchor,
-            src: url,
-          })
-          .focus()
-          .run();
-      });
+          return currentEditor
+            .chain()
+            .setImageBlockAt({
+              pos: currentEditor.state.selection.anchor,
+              src: url,
+            })
+            .focus()
+            .run();
+        });
     },
   }),
 

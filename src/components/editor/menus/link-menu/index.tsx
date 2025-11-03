@@ -1,5 +1,5 @@
 import { BubbleMenu, Editor } from "@tiptap/react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import Wrapper from "../bubble-menu-wrapper";
 import { LinkPreviewMenu } from "./preview-menu";
 import { LinkEditPanel } from "./edit-panel";
@@ -34,6 +34,25 @@ export default function LinkMenu(props: MenuProps) {
     setShowEdit(false);
     return null;
   };
+  useEffect(() => {
+    if (!editor) return;
+
+    const handleUpdate = () => {
+      // 每次编辑器状态更新时，检查链接的变化
+      const { href: currentHref } = editor.getAttributes("link") || {};
+      if (currentHref && currentHref !== href) {
+        setShowEdit(false); // 如果检测到链接变化，设置showEdit为false
+      }
+    };
+
+    // 监听编辑器选区改变
+    editor.on("transaction", handleUpdate);
+
+    // 清理函数
+    return () => {
+      editor.off("transaction", handleUpdate);
+    };
+  }, [editor, href]);
 
   if (editor == null) return;
 
