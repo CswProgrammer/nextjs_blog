@@ -22,7 +22,16 @@ export default async function Work() {
     return;
   }
 
-  // 找不到文档，新建文档
+  const count = await db.docBlog.count({
+    where: { userId: user.id }, // 不限制 delete
+  });
+  if (count > 0) {
+    // 有文档，但是都是删除状态
+    redirect(`/work/0`);
+    return;
+  }
+
+  // 找不到任何文档，则新建文档
   const newDoc = await db.docBlog.create({
     data: {
       userId: user.id,

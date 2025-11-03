@@ -6,9 +6,8 @@ import { getUserInfo } from "@/lib/session";
 
 export async function getDocList() {
   const user = await getUserInfo();
-  if (user == null) return [];
-
-  const list = db.docBlog.findMany({
+  if (user == null || user.id === "") return [];
+  const list = await db.docBlog.findMany({
     select: {
       id: true,
       title: true,
@@ -17,7 +16,7 @@ export async function getDocList() {
     },
     //查询未删除的文档
     where: {
-      userId: user.id || "",
+      userId: user.id,
       isDeleted: false,
     },
     orderBy: {
