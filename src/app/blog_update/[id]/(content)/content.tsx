@@ -103,6 +103,7 @@ export default function Content(props: IProps) {
         SetEditorContent(data.content);
         setIsStar(data.isStar);
         setLoading(false);
+        emitter.emit(EVENT_KEY_CHANGE_UPDATING, { updating: false, id }); // 切换文档，重置标记
       });
     }
     emitter.on(EVENT_KEY_NAV_DOC, load);
