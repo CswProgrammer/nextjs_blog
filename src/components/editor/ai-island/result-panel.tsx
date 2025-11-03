@@ -8,6 +8,7 @@ import { EVENT_KEY_FOCUS_AI } from "@/constants";
 
 interface IProps {
   editor: Editor | null;
+  isSelectionEmpty: boolean;
   loading: boolean;
   result: string;
   setResult: (result: string) => void;
@@ -15,14 +16,23 @@ interface IProps {
 }
 
 export default function ResultPanel(props: IProps) {
-  const { editor, loading, result = "", setResult, setInstruction } = props;
+  const {
+    editor,
+    isSelectionEmpty,
+    loading,
+    result = "",
+    setResult,
+    setInstruction,
+  } = props;
+
   const menuRef = useRef<HTMLDivElement>(null);
   const resList = result.split("\n"); // 考虑换行
 
   // 插入编辑器，考虑换行
   function insertResultToEditor() {
     resList.forEach((c, index) => {
-      if (c) editor?.commands.insertContent(c);
+      if (c.trim() === "") return;
+      editor?.commands.insertContent(c);
       if (index < resList.length - 1) {
         editor?.commands.enter(); // 换行
       }
@@ -75,6 +85,7 @@ export default function ResultPanel(props: IProps) {
   }
 
   if (editor == null) return null;
+  if (isSelectionEmpty) return null;
   if (!result && !loading) return null;
 
   return (
