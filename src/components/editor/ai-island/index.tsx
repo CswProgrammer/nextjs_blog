@@ -1,8 +1,8 @@
 "use client";
 import { Editor } from "@tiptap/react";
 
-import { useState, useRef, useEffect } from "react";
-
+import { useRef, useEffect, useCallback, useState } from "react";
+import { createPortal } from "react-dom";
 import { CONTENT_WIDTH, EVENT_KEY_FOCUS_AI } from "@/constants";
 
 import emitter from "@/lib/emitter";

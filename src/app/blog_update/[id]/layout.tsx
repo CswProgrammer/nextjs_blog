@@ -14,6 +14,7 @@ import { getUserInfo } from "@/lib/session";
 import TopBar from "./top-bar";
 import StarList from "../star-list";
 import SearchComp from "../search";
+import { RIGHT_PANEL_DOM_ID } from "@/constants";
 
 export default async function Layout({
   params,
@@ -63,7 +64,10 @@ export default async function Layout({
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={82}>
-        <div className="h-screen flex flex-col">
+        <div
+          id={RIGHT_PANEL_DOM_ID}
+          className="h-screen flex flex-col relative"
+        >
           {/* top bar */}
           <TopBar defaultId={id} /> {/* content */}
           <div

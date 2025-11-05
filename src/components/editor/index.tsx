@@ -1,10 +1,10 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useRef, useEffect, useCallback, useState } from "react";
+import { createPortal } from "react-dom";
 import TextMenu from "./menus/text-menu";
 import { extensions } from "./extensions";
 import ContentMenu from "./menus/content-menu";
-import { useRef, useEffect, useCallback } from "react";
 
 import ColumnsMenu from "./menus/columns-menu";
 import LinkMenu from "./menus/link-menu";
@@ -12,7 +12,8 @@ import ImageBlockMenu from "./menus/image-block-menu";
 import { TableRowMenu, TableColMenu } from "./menus/table-menu";
 import AIIsland from "./ai-island";
 import emitter from "@/lib/emitter";
-import { EVENT_KEY_CHANGE_CHAR_COUNT } from "@/constants";
+import { EVENT_KEY_CHANGE_CHAR_COUNT, RIGHT_PANEL_DOM_ID } from "@/constants";
+import { useEditor, EditorContent } from "@tiptap/react";
 
 interface IProps {
   id: string;
@@ -65,6 +66,11 @@ const TiptapEditor = (props: IProps) => {
 
   useEffect(updateCharacterCount);
 
+  const [rightPanelDiv, setRightPanelDiv] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    setRightPanelDiv(document.getElementById(RIGHT_PANEL_DOM_ID));
+  }, []);
+
   return (
     <>
       <div ref={menuContainerRef}>
@@ -77,7 +83,8 @@ const TiptapEditor = (props: IProps) => {
         <TableRowMenu editor={editor} appendTo={menuContainerRef} />
         <TableColMenu editor={editor} appendTo={menuContainerRef} />
       </div>
-      <AIIsland editor={editor} />
+      {rightPanelDiv &&
+        createPortal(<AIIsland editor={editor} />, rightPanelDiv)}
     </>
   );
 };

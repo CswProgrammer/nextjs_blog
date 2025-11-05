@@ -15,3 +15,4 @@ export const EVENT_KEY_FOCUS_AI = "E_K_FOCUS_AI";
 export const AI_DEFAULT_TOKEN_LIMIT = 10000; // AI 默认 token limit
 export const EVENT_KEY_CHANGE_CHAR_COUNT = "E_K_CHANGE_CHAR_COUNT";
 export const MAX_DOC_COUNT = 100; // 最大文档数量
+export const RIGHT_PANEL_DOM_ID = "RIGHT_PANEL_DOM_ID";
