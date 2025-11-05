@@ -40,13 +40,14 @@ export async function PATCH(
 
   try {
     await db.docBlog.update({
-      where: { id, userId: user.id },
+      where: { id, userId: user.id, isDeleted: false },
+
       data: body,
     });
 
     return Response.json(genSuccessData());
   } catch (ex) {
     console.error("Update doc error", ex);
-    return Response.json(genErrorData("Update doc error"));
+    return Response.json(genErrorData("更新失败"));
   }
 }

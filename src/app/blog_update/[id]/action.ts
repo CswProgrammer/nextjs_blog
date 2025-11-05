@@ -12,7 +12,7 @@ export async function getDoc(id: string) {
 
   try {
     const doc = await db.docBlog.findUnique({
-      where: { id, userId: user.id },
+      where: { id, userId: user.id, isDeleted: false },
     });
     return doc;
   } catch (ex) {

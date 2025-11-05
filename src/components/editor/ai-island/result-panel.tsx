@@ -3,8 +3,7 @@ import { Button } from "@/components/ui/button";
 import { X, Sparkle, BetweenHorizonalStart, Replace } from "lucide-react";
 import { useEffect, useRef } from "react";
 import scrollIntoView from "scroll-into-view-if-needed";
-import emitter from "@/lib/emitter";
-import { EVENT_KEY_FOCUS_AI } from "@/constants";
+
 import markdownit from "markdown-it";
 
 const md = markdownit();
@@ -16,6 +15,7 @@ interface IProps {
   result: string;
   setResult: (result: string) => void;
   setInstruction: (instruction: string) => void;
+  reRequestAI: () => void;
 }
 
 export default function ResultPanel(props: IProps) {
@@ -26,6 +26,7 @@ export default function ResultPanel(props: IProps) {
     result = "",
     setResult,
     setInstruction,
+    reRequestAI,
   } = props;
 
   const menuRef = useRef<HTMLDivElement>(null);
@@ -73,12 +74,6 @@ export default function ResultPanel(props: IProps) {
     setInstruction("");
   }
 
-  // 重新生成 AI 结果
-  function onRegenerate() {
-    setResult("");
-    emitter.emit(EVENT_KEY_FOCUS_AI);
-  }
-
   // 关闭
   function onClose() {
     setResult("");
@@ -109,7 +104,7 @@ export default function ResultPanel(props: IProps) {
         <div className="flex justify-center mt-1" ref={menuRef}>
           {/* 处理 AI 结果的菜单：替换，插入，重新生成，取消 */}
           <Button
-            onClick={onReplace}
+            onClick={reRequestAI}
             disabled={loading}
             variant="ghost"
             className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"
@@ -129,7 +124,7 @@ export default function ResultPanel(props: IProps) {
             插入
           </Button>
           <Button
-            onClick={onRegenerate}
+            onClick={reRequestAI}
             disabled={loading}
             variant="ghost"
             className="p-2 text-blue-500 hover:bg-inherit hover:text-blue-400"

@@ -27,8 +27,9 @@ export default function AIIsland(props: { editor: Editor | null }) {
   const [isSelectionEmpty, setIsSelectionEmpty] = useState(true);
   const [AIResult, setAIResult] = useState("");
   const [tokenLimit, setTokenLimit] = useState(-1);
+  const [delay, setDelay] = useState(0); // 每次请求间隔时间
 
-  const { requestAI, abortRequestAI } = useRequestAI({
+  const { requestAI, abortRequestAI, reRequestAI } = useRequestAI({
     editor,
     isSelectionEmpty,
     loading,
@@ -41,6 +42,8 @@ export default function AIIsland(props: { editor: Editor | null }) {
   // 监听 input focus blur
   useEffect(() => {
     if (!inputRef.current) return;
+    if (AIResult) return; // AI 结果不为空时，不监听 focus blur
+
     function handleFocus() {
       setIsFocus(true);
       setAIResult("");
@@ -61,7 +64,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
       inputRef.current.removeEventListener("focus", handleFocus);
       inputRef.current.removeEventListener("blur", handleBlur);
     };
-  }, [inputRef, editor]);
+  }, [inputRef, editor, AIResult]);
 
   // 监听空格输入，focus AI island
   useEffect(() => {
@@ -112,6 +115,7 @@ export default function AIIsland(props: { editor: Editor | null }) {
         result={AIResult}
         setResult={setAIResult}
         setInstruction={setInstruction}
+        reRequestAI={reRequestAI}
       />
       {/* AI 菜单，isSelectionEmpty 时 */}
       {isFocus && !loading && isSelectionEmpty && !AIResult && (

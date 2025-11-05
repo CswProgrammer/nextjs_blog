@@ -5,6 +5,7 @@ import { db } from "@/db/db";
 import { isSameMonth } from "@/lib/dt";
 import { AI_DEFAULT_TOKEN_LIMIT } from "@/constants";
 import AddLimit from "./add-limit";
+import UpdateTime from "./update-time";
 
 export default async function AITokenPage() {
   const user = await getUserInfo();
@@ -107,7 +108,7 @@ export default async function AITokenPage() {
           <hr />
           <p>
             你当前 token limit 数量：{tokensLimit} ；最后领取（或重置）时间：
-            {updateLimitAt.toLocaleString()} ；
+            <UpdateTime dt={updateLimitAt} /> ；
           </p>
           <p>
             <AddLimit />

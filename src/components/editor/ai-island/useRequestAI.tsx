@@ -29,6 +29,7 @@ export default function useRequestAI(params: IParams) {
     setTokenLimit,
   } = params;
 
+  const [prevMessages, setPrevMessages] = useState<MessagesType>([]);
   const [eventSource, setEventSource] = useState<EventSource | null>(null);
   const { toast } = useToast();
 
@@ -58,6 +59,8 @@ export default function useRequestAI(params: IParams) {
       onError("AI tokens 使用量已超出限制，请先领取或购买");
       return;
     }
+
+    setPrevMessages(messages); // 记录当前 messages
 
     setLoading(true);
     setAIResult("");
@@ -150,5 +153,10 @@ export default function useRequestAI(params: IParams) {
     }
   }
 
-  return { requestAI, abortRequestAI };
+  function reRequestAI() {
+    // console.log('reRequestAI...', prevMessages)
+    requestAI(prevMessages);
+  }
+
+  return { requestAI, abortRequestAI, reRequestAI };
 }

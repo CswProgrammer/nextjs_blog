@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { updateIsStar } from "@/app/blog_update/[id]/(content)/client-action";
 import emitter from "@/lib/emitter";
 import { EVENT_KEY_CHANGE_IS_STAR } from "@/constants";
+import { useToast } from "@/components/ui/use-toast";
 
 interface IProps {
   id: string;
@@ -14,6 +15,7 @@ interface IProps {
 
 export default function StarDocButton(props: IProps) {
   const { id, defaultIsStar = false, className = "" } = props;
+  const { toast } = useToast();
 
   // 监听 isStar 状态
   const [isStar, setIsStar] = useState(defaultIsStar);
@@ -26,12 +28,22 @@ export default function StarDocButton(props: IProps) {
     return () => emitter.off(EVENT_KEY_CHANGE_IS_STAR, handler); // 及时销毁自定义事件
   }, [id]);
 
-  function handleUpdateIsStar() {
+  async function handleUpdateIsStar() {
     const newIsStar = !isStar;
-    emitter.emit(EVENT_KEY_CHANGE_IS_STAR, { isStar: newIsStar, id }); // 广播事件
 
     // 异步更新数据库
-    updateIsStar(id, newIsStar);
+    const res = await updateIsStar(id, newIsStar);
+    if (res.errno !== 0) {
+      toast({
+        variant: "destructive",
+        title: "错误",
+        description: res.msg,
+      });
+      return;
+    }
+
+    // 广播事件
+    emitter.emit(EVENT_KEY_CHANGE_IS_STAR, { isStar: newIsStar, id });
   }
 
   return (
