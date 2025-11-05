@@ -1,5 +1,4 @@
 import { Editor } from "@tiptap/react";
-import throttle from "lodash/throttle";
 import { useState, useCallback } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
@@ -33,45 +32,9 @@ export default function useRequestAI(params: IParams) {
   const [eventSource, setEventSource] = useState<EventSource | null>(null);
   const { toast } = useToast();
 
-  // eslint-disable-next-line
-  const editorScrollIntoView = useCallback(
-    throttle(() => editor?.commands.scrollIntoView(), 500),
-    [editor],
-  );
-
-  function insertCount(content: string) {
-    if (isSelectionEmpty) {
-      // 未选中内容，直接插入到编辑器中
-      if (content.indexOf("\n") < 0) {
-        // 没有换行符，直接插入内容
-        editor?.commands.insertContent(content);
-        editorScrollIntoView();
-        return;
-      }
-      // 有换行符，则需要考虑换行
-      const arr = content.split("\n");
-      arr.forEach((c, index) => {
-        if (c) {
-          editor?.commands.insertContent(c);
-          editorScrollIntoView();
-        }
-        if (index < arr.length - 1) {
-          editor?.commands.enter(); // 换行
-        }
-      });
-    } else {
-      // 有选中内容，则另外显示
-      setAIResult((r: string) => r + content);
-    }
-  }
-
   function onSuccess() {
     setLoading(false);
-    if (isSelectionEmpty) {
-      setInstruction("");
-      editor?.commands.enter();
-      editor?.commands.focus();
-    }
+
     editor?.setEditable(true);
   }
 
@@ -146,7 +109,7 @@ export default function useRequestAI(params: IParams) {
         console.log("📝 拿到的 content：", content);
 
         if (content) {
-          insertCount(content);
+          setAIResult((r: string) => r + content);
         } else {
           console.log("⚠️ content 为空，跳过");
         }
@@ -169,7 +132,7 @@ export default function useRequestAI(params: IParams) {
       } catch (e) {
         // 如果不是 JSON，直接插入
         console.warn("⚠️ 非 JSON 数据，直接插入：", raw);
-        insertCount(raw);
+        setAIResult((r: string) => r + raw);
       }
     };
     // 🔴 修改结束

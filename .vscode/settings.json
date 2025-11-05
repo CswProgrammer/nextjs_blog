@@ -11,6 +11,7 @@
     "rowspan",
     "shadcn",
     "Tiptap",
+    "markdownit",
     "Pilcrow"
   ],
   "files.associations": {

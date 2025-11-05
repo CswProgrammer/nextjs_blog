@@ -5,6 +5,9 @@ import { useEffect, useRef } from "react";
 import scrollIntoView from "scroll-into-view-if-needed";
 import emitter from "@/lib/emitter";
 import { EVENT_KEY_FOCUS_AI } from "@/constants";
+import markdownit from "markdown-it";
+
+const md = markdownit();
 
 interface IProps {
   editor: Editor | null;
@@ -26,18 +29,17 @@ export default function ResultPanel(props: IProps) {
   } = props;
 
   const menuRef = useRef<HTMLDivElement>(null);
-  const resList = result.split("\n"); // 考虑换行
+
+  const resultHtml = md.render(result);
+  const innerHtml = { __html: resultHtml };
 
   // 插入编辑器，考虑换行
   function insertResultToEditor() {
-    resList.forEach((c, index) => {
-      if (c.trim() === "") return;
-      editor?.commands.insertContent(c);
-      if (index < resList.length - 1) {
-        editor?.commands.enter(); // 换行
-      }
-    });
-    editor?.commands.scrollIntoView();
+    if (editor == null) return;
+    if (result) {
+      editor.commands.insertContent(resultHtml);
+    }
+    editor.commands.scrollIntoView();
   }
   useEffect(() => {
     if (menuRef.current == null) return;
@@ -85,11 +87,10 @@ export default function ResultPanel(props: IProps) {
   }
 
   if (editor == null) return null;
-  if (isSelectionEmpty) return null;
   if (!result && !loading) return null;
 
   return (
-    <div className="border-2 border-blue-600 rounded-lg shadow p-4 pb-2 mb-2">
+    <div className="border-2 border-blue-600 rounded-lg shadow-lg p-4 pb-2 mb-2">
       <div className="max-h-72 overflow-y-auto">
         {!result && (
           <div className="text-center">
@@ -99,17 +100,12 @@ export default function ResultPanel(props: IProps) {
           </div>
         )}
         {result && (
-          <div>
-            {resList.map((l, index) => {
-              if (l.trim() === "") return null;
-              return (
-                <p key={index} className="text-sm my-2 first:mt-0">
-                  {l}
-                </p>
-              );
-            })}
-          </div>
+          <div
+            dangerouslySetInnerHTML={innerHtml}
+            className="prose dark:prose-invert max-w-none"
+          ></div>
         )}
+
         <div className="flex justify-center mt-1" ref={menuRef}>
           {/* 处理 AI 结果的菜单：替换，插入，重新生成，取消 */}
           <Button
@@ -144,7 +140,7 @@ export default function ResultPanel(props: IProps) {
           </Button>
           <Button
             onClick={onClose}
-            disabled={loading}
+            disabled={loading || isSelectionEmpty}
             variant="ghost"
             className="p-2 text-red-500 hover:bg-inherit hover:text-red-400"
             tabIndex={-1}
