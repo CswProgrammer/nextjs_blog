@@ -7,22 +7,23 @@ import { cn } from "@/lib/utils";
 
 import emitter from "@/lib/emitter";
 import scrollIntoView from "scroll-into-view-if-needed";
+import { EVENT_KEY_CREATE_DOC } from "@/constants";
+
 import { isDescendant, nav } from "./util";
 
 import { IDoc } from "./type";
-import { EVENT_KEY_CHANGE_DOC_TITLE, EVENT_KEY_CREATE_DOC } from "@/constants";
 import ItemHandlers from "./item-handlers";
 
 interface IProps {
   id: string;
-  defaultTitle: string;
+  title: string;
   paramId: string;
   list: IDoc[];
   isStar: boolean;
 }
 
 export default function Item(props: IProps) {
-  const { id, defaultTitle, list = [], paramId, isStar } = props;
+  const { id, title, list = [], paramId, isStar } = props;
   const isCurrent = id === paramId;
   const titleContainerRef = useRef<HTMLDivElement>(null);
 
@@ -36,23 +37,6 @@ export default function Item(props: IProps) {
     e.stopPropagation;
     setShowChildren(!showChildren);
   }
-
-  // 修改标题的自定义事件
-  const [title, setTitle] = useState(defaultTitle || "<无标题>");
-  useEffect(() => {
-    // 修改标题时触发事件
-    if (!isCurrent) return; // 只监听当前文档
-    function handler(payload: any) {
-      let newTitle = payload as string;
-      if (!newTitle.trim()) newTitle = "<无标题>";
-      setTitle(newTitle);
-    }
-    emitter.on(EVENT_KEY_CHANGE_DOC_TITLE, handler);
-
-    return () => {
-      emitter.off(EVENT_KEY_CHANGE_DOC_TITLE, handler); // 及时清理自定义事件
-    };
-  }, [isCurrent]);
 
   // 滚动到当前标题
   useEffect(() => {
@@ -107,7 +91,7 @@ export default function Item(props: IProps) {
               <FileText className="h-4 w-4" />
             </div>
           )}
-          <span className="truncate flex-auto">{title}</span>
+          <span className="truncate flex-auto">{title || "<无标题>"}</span>
         </div>
 
         {/* 操作按钮 */}
@@ -132,7 +116,7 @@ export default function Item(props: IProps) {
               <Item
                 key={id}
                 id={id}
-                defaultTitle={title}
+                title={title}
                 paramId={paramId}
                 list={list}
                 isStar={!!isStar}

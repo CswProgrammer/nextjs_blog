@@ -1,4 +1,5 @@
-import { forwardRef, ForwardedRef, useMemo } from "react";
+import { forwardRef, ForwardedRef, useMemo, useState } from "react";
+
 import { Editor } from "@tiptap/react";
 import {
   Sparkles,
@@ -65,10 +66,18 @@ const CustomInput = forwardRef(
       onRequestAI(messages);
     }
 
+    const [composition, setComposition] = useState(false); // 中文输入法状态
+    function handleCompositionStart() {
+      setComposition(true);
+    }
+    function handleCompositionEnd() {
+      setComposition(false);
+    }
+
     function handleKeydown(event: React.KeyboardEvent<HTMLInputElement>) {
       const { key } = event;
       if (key === "Enter") {
-        if (!instruction.trim()) return;
+        if (composition) return;
         const messages = genMessages(instruction);
         onRequestAI(messages);
       }
@@ -108,6 +117,8 @@ const CustomInput = forwardRef(
             ref={inputRef}
             onKeyDown={handleKeydown}
             onChange={(e) => setInstruction(e.target.value)}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
             className="bg-inherit border-none focus-visible:ring-offset-0 focus-visible:ring-0"
           />
           <Button

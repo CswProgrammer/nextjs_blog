@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import TiptapEditor from "@/components/editor";
@@ -53,7 +54,7 @@ export default function Content(props: IProps) {
     updateTitle(id, newTitle);
 
     // 触发事件，以更新左侧列表的文章标题
-    emitter.emit(EVENT_KEY_CHANGE_DOC_TITLE, newTitle);
+    emitter.emit(EVENT_KEY_CHANGE_DOC_TITLE, { id, newTitle });
   }
 
   // isStar
@@ -61,6 +62,11 @@ export default function Content(props: IProps) {
   useEffect(() => {
     emitter.emit(EVENT_KEY_CHANGE_IS_STAR, { isStar, id });
   }, [isStar, id]);
+
+  useEffect(() => {
+    document.title = title || "<无标题>";
+  }, [title]);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   // 编辑器内容
   const [editorContent, SetEditorContent] = useState(defaultContent);
@@ -81,6 +87,7 @@ export default function Content(props: IProps) {
       setNotFound(false);
 
       setLoading(true);
+      setTimeout(() => titleInputRef.current?.focus(), 200);
 
       // 刚创建的新文档，不用查询内容（查也是空的）
       if (type === "create") {
@@ -97,6 +104,7 @@ export default function Content(props: IProps) {
         // 通过 id 找不到 doc
         if (data == null) {
           setNotFound(true);
+          setTitle("Not Found");
           setLoading(false);
           return;
         }
@@ -168,6 +176,7 @@ export default function Content(props: IProps) {
           maxLength={100}
           onChange={handleChange}
           className="border-none p-0 text-4xl font-bold focus-visible:ring-transparent"
+          ref={titleInputRef}
         />
         {/* 可能还会再增加其他功能，例如设置 Icon 、背景等 */}
       </div>

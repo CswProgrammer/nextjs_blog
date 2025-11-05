@@ -8,6 +8,7 @@ import {
   EVENT_KEY_CREATE_DOC,
   EVENT_KEY_DEL_DOC,
   EVENT_KEY_CHANGE_IS_STAR,
+  EVENT_KEY_CHANGE_DOC_TITLE,
 } from "@/constants";
 
 import { IAjaxRes, patch, post } from "@/lib/ajax";
@@ -188,6 +189,26 @@ export default function useList(defaultList: IDoc[], paramId: string) {
     emitter.on(EVENT_KEY_CHANGE_IS_STAR, handler);
 
     return () => emitter.off(EVENT_KEY_CHANGE_IS_STAR, handler); // 及时销毁自定义事件
+  }, []);
+
+  // 监听修改标题
+  useEffect(() => {
+    function handler(payload: any) {
+      const { newTitle = "<无标题>", id: docId = "" } = payload;
+      if (!docId) return;
+      setList((prevList) => {
+        return prevList.map((i) => {
+          if (i.id === docId) {
+            const newDoc = { ...i, title: newTitle };
+            return newDoc;
+          }
+          return i;
+        });
+      });
+    }
+    emitter.on(EVENT_KEY_CHANGE_DOC_TITLE, handler);
+
+    return () => emitter.off(EVENT_KEY_CHANGE_DOC_TITLE, handler); // 及时销毁自定义事件
   }, []);
 
   return { list };
