@@ -6,8 +6,8 @@ import { EVENT_KEY_CHANGE_UPDATING } from "@/constants";
 export async function getDoc(id: string) {
   const url = `/api/doc/${id}`;
   const { errno, msg, data } = await get(url);
-  if (errno === 0) return data;
-  else return msg;
+  if (errno !== 0) return null;
+  return data;
 }
 
 async function updateDoc(

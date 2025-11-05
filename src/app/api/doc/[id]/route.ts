@@ -19,6 +19,10 @@ export async function GET(
     where: { id, userId: user.id, isDeleted: false },
   });
 
+  if (doc == null) {
+    return Response.json(genErrorData("Doc not found"));
+  }
+
   return Response.json(genSuccessData(doc));
 }
 
