@@ -72,7 +72,6 @@ model User {
   sessions      Session[]
   docs          DocBlog[]
   tokenUsage   TokenUsage?
-  lastDocId     String?
   isInvited     Boolean?  @default(false)
 }
 

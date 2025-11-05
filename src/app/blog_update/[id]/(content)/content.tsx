@@ -14,6 +14,8 @@ import {
   EVENT_KEY_CHANGE_UPDATING,
   EVENT_KEY_CHANGE_IS_STAR,
   CONTENT_WIDTH,
+  DOC_TITLE_INPUT_ID,
+  LAST_DOC_ID_KEY,
 } from "@/constants";
 import { get } from "@/lib/ajax";
 
@@ -78,6 +80,7 @@ export default function Content(props: IProps) {
 
   // 获取文章内容
   useEffect(() => {
+    localStorage.setItem(LAST_DOC_ID_KEY, id); // 保存最后一次打开的文档 id
     function load(payload: any) {
       const { id, type } = payload || {};
       if (!id) return;
@@ -119,18 +122,6 @@ export default function Content(props: IProps) {
 
     return () => {
       emitter.off(EVENT_KEY_NAV_DOC, load); // 及时销毁自定义事件
-    };
-  }, [id]);
-
-  // 监听 window close 更新 lastDocId
-  useEffect(() => {
-    function handler() {
-      const url = "/api/user/update-last-doc-id?lastDocId=" + id;
-      get(url); // window close 时只能发送 get 请求，如发送 patch 请求服务端会报错
-    }
-    window.addEventListener("beforeunload", handler);
-    return () => {
-      window.removeEventListener("beforeunload", handler); // 及时销毁 DOM 事件
     };
   }, [id]);
 

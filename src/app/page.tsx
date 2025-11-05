@@ -1,11 +1,13 @@
 // import Image from "next/image";
+import Link from "next/link";
+import { Zap, User, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Code } from "lucide-react";
 
 import HomeNav from "@/components/homenav";
 import Slogan from "@/components/slogan";
-import Link from "next/link";
-import StartButton from "./start-btn";
+import StartButton from "@/components/start-button";
+import SignInButton from "@/components/sign-in-button";
+import { getUserInfo } from "@/lib/session";
 
 export default async function Home() {
   return (
@@ -16,7 +18,7 @@ export default async function Home() {
       </h2>
       <Slogan />
       <section className="mt-10 flex justify-center space-x-4">
-        <StartButton />
+        <MainButton />
 
         <Button
           variant="secondary"
@@ -28,5 +30,40 @@ export default async function Home() {
         </Button>
       </section>
     </main>
+  );
+}
+
+async function MainButton() {
+  const user = await getUserInfo();
+  if (user == null) {
+    return (
+      <SignInButton className="text-base" size="lg">
+        <User className="h-4 w-4" />
+        &nbsp;登录 / 注册
+      </SignInButton>
+    );
+  }
+  // @ts-ignore
+  if (!user.isInvited) {
+    return (
+      <Link href="/invitation-code">
+        <Button className="text-base" size="lg">
+          <Zap className="h-4 w-4 mr-1" />
+          验证邀请码
+        </Button>
+      </Link>
+    );
+  }
+  return <StartButton />;
+}
+
+function LearnButton() {
+  return (
+    <Link href="/join">
+      <Button variant="secondary" className="text-base" size="lg">
+        <Code className="h-4 w-4 mr-1" />
+        学习项目/参与开发
+      </Button>
+    </Link>
   );
 }
