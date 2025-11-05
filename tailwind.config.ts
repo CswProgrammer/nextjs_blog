@@ -118,6 +118,24 @@ const config = {
               "margin-top": "1em",
               "margin-bottom": "1em",
             },
+            "ul>li::marker": {
+              color: "var(--tw-prose-body);",
+            },
+            "code::before": {
+              content: "none",
+            },
+            "code::after": {
+              content: "none",
+            },
+            code: {
+              "background-color": "var(--tw-prose-pre-bg)",
+              color: "var(--tw-prose-pre-code)",
+              padding: "0.125em 0.25em",
+              margin: "0 0.25em",
+              "border-radius": "0.25em",
+              "font-weight": "normal",
+            },
+            "--tw-prose-invert-pre-bg": "rgb(255 255 255 / 0.1)",
           },
         },
       },

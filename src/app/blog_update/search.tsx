@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Search as SearchIcon,
@@ -44,8 +43,6 @@ export default function Search() {
 }
 
 function SearchPanel() {
-  const router = useRouter();
-
   // input elem
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -87,7 +84,7 @@ function SearchPanel() {
   function handleClick(doc: IDoc) {
     const { isDeleted, id } = doc;
     if (isDeleted) return;
-    router.push(`/blog_update/${id}`);
+    location.href = `/blog_update/${id}`;
   }
 
   return (

@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,8 +44,6 @@ export default function StarList() {
 }
 
 function StarListTable() {
-  const router = useRouter();
-
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState<IDoc[]>([]);
 
@@ -73,7 +70,7 @@ function StarListTable() {
 
   // 点击，跳转
   function handleClick(id: string) {
-    router.push("/blog_update/" + id);
+    location.href = `/blog_update/${id}`;
   }
 
   if (loading) {

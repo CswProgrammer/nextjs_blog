@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -52,7 +51,6 @@ export default function Trash() {
 }
 
 function TrashTable() {
-  const router = useRouter();
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(true);
@@ -100,7 +98,7 @@ function TrashTable() {
     });
 
     if (errno === 0) {
-      router.push(`/blog_update/${id}`);
+      location.href = `/blog_update/${id}`;
     } else {
       toast({
         variant: "destructive",

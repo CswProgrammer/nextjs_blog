@@ -23,8 +23,10 @@ export function timeAgo(timeString: string) {
     return hours + " 小时前";
   } else if (minutes > 0) {
     return minutes + " 分钟前";
-  } else {
+  } else if (seconds > 0) {
     return seconds + " 秒前";
+  } else {
+    return "刚刚";
   }
 }
 
