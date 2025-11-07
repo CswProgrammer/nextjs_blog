@@ -18,16 +18,16 @@ export async function POST(request: Request) {
   const { code } = body;
 
   // 根据 email 和 code 查找
-  const res = await db.invitationCode.findFirst({
-    where: {
-      email: email || "",
-      code,
-    },
-  });
-
-  // 未找到邀请码
-  if (res == null) {
-    return Response.json(genErrorData("邀请码无效"));
+  try {
+    const res = await db.invitationCode.findFirst({
+      where: { code },
+    });
+    // 未找到邀请码
+    if (res == null) {
+      return Response.json(genErrorData("邀请码无效"));
+    }
+  } catch (err) {
+    return Response.json(genErrorData("获取邀请码错误"));
   }
 
   // 更新用户信息

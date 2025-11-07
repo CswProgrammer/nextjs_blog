@@ -7,15 +7,16 @@ import { redirect } from "next/navigation";
 import { getUserInfo } from "@/lib/session";
 
 export async function getDoc(id: string) {
-  const user = await getUserInfo();
-  if (user == null) return null;
-
   try {
+    const user = await getUserInfo();
+    if (user == null) return null;
+
     const doc = await db.docBlog.findUnique({
       where: { id, userId: user.id, isDeleted: false },
     });
     return doc;
-  } catch (ex) {
+  } catch (err) {
+    console.error("getDoc error: ", err);
     return null;
   }
 }

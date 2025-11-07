@@ -1,0 +1,78 @@
+edition: 3.0.0
+name: web-framework-app
+access: 'undefined'
+vars:
+  region: 'cn-hongkong'
+  functionName: 'huashuiai-web-test'
+resources:
+  framework:
+    component: fc3
+    actions:
+      pre-deploy:
+        - run: |
+            touch .env
+            echo "DATABASE_URL=${env(DATABASE_URL)}" >> .env
+            echo "AUTH_SECRET=${env(AUTH_SECRET)}" >> .env
+            echo "AUTH_GITHUB_ID=${env(AUTH_GITHUB_ID)}" >> .env
+            echo "AUTH_GITHUB_SECRET=${env(AUTH_GITHUB_SECRET)}" >> .env
+            echo "NEXTAUTH_URL=${env(NEXTAUTH_URL)}" >> .env
+            echo "EMAIL_FROM=${env(EMAIL_FROM)}" >> .env
+            echo "EMAIL_HOST=${env(EMAIL_HOST)}" >> .env
+            echo "EMAIL_PORT=${env(EMAIL_PORT)}" >> .env
+            echo "EMAIL_PASSWORD=${env(EMAIL_PASSWORD)}" >> .env
+            echo "NOTICE_EMAIL_TO=${env(NOTICE_EMAIL_TO)}" >> .env
+            echo "OSS_ACCESS_KEY_ID=${env(OSS_ACCESS_KEY_ID)}" >> .env
+            echo "OSS_ACCESS_KEY_SECRET=${env(OSS_ACCESS_KEY_SECRET)}" >> .env
+            echo "OSS_BUCKET=${env(OSS_BUCKET)}" >> .env
+            echo "NEXT_PUBLIC_OSS_CDN_HOSTNAME=${env(NEXT_PUBLIC_OSS_CDN_HOSTNAME)}" >> .env
+            echo "GPT_API_PROXY_ORIGIN=${env(GPT_API_PROXY_ORIGIN)}" >> .env
+            echo "GPT_API_PROXY_AUTH_TOKEN=${env(GPT_API_PROXY_AUTH_TOKEN)}" >> .env
+        - run: |
+            export PATH=/usr/local/versions/node/v20.8.1/bin:$PATH
+            npm config set "@tiptap-pro:registry" https://registry.tiptap.dev/
+            npm config set "//registry.tiptap.dev/:_authToken" ${env(tiptapKey)}
+            npm install
+        - run: export PATH=/usr/local/versions/node/v20.8.1/bin:$PATH && npm run build
+        - run: cp -r public .next/standalone/public
+        - run: mv static standalone/.next/static
+          path: ./.next
+    props:
+      region: ${vars.region}
+      description: Serverless Devs Web Framework Function
+      runtime: custom.debian10
+      timeout: 60
+      # memorySize: 1024
+      layers:
+        - acs:fc:${vars.region}:official:layers/Nodejs20/versions/1
+      environmentVariables:
+        PATH: >-
+          /opt/nodejs20/bin:/usr/local/bin/apache-maven/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ruby/bin
+      customRuntimeConfig:
+        command:
+          - node
+          - server.js
+        port: 3000
+      functionName: ${vars.functionName}
+      code: ./.next/standalone
+      triggers:
+        - triggerName: httpTrigger
+          triggerType: http
+          triggerConfig:
+            authType: anonymous
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - HEAD
+              - PATCH
+  fc3_domain_0:
+    component: fc3-domain
+    props:
+      region: ${vars.region}
+      domainName: auto
+      protocol: HTTP
+      routeConfig:
+        routes:
+          - path: /*
+            functionName: ${vars.functionName}

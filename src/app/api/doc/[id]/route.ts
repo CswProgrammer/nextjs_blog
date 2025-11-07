@@ -5,6 +5,7 @@ import {
   genErrorData,
   genUnAuthData,
 } from "@/app/api/utils/gen-res-data";
+import { error } from "console";
 
 // 获取单个 doc 内容
 export async function GET(
@@ -22,7 +23,6 @@ export async function GET(
   if (doc == null) {
     return Response.json(genErrorData("Doc not found"));
   }
-
   return Response.json(genSuccessData(doc));
 }
 

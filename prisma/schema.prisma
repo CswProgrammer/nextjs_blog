@@ -20,7 +20,7 @@ model DocBlog {
     id        String  @id @default(cuid())
     title      String
     content    String
-    isDeleted Boolean @default(false)
+    isDeleted Boolean?
     category   String
     isStar    Boolean @default(false)
     createdAt DateTime @default(now())
