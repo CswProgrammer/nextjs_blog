@@ -1,9 +1,9 @@
 edition: 3.0.0
 name: web-framework-app
-access: 'undefined'
+access: "undefined"
 vars:
-  region: 'ap-southeast-1'
-  functionName: 'next-hs'
+  region: "ap-southeast-1"
+  functionName: "next-hs"
 resources:
   framework:
     component: fc3

@@ -43,7 +43,7 @@ export async function getDocList() {
         isStar: true,
       },
       where: {
-        userId: user.id,
+        // userId: user.id,
         isDeleted: false,
       },
       orderBy: {
