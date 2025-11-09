@@ -27,7 +27,7 @@ export default async function Work() {
   });
   if (count > 0) {
     // 有文档，但是都是删除状态
-    redirect(`/work/0`);
+    redirect(`/blog_update/0`);
     return;
   }
 

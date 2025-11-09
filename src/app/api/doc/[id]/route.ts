@@ -13,11 +13,12 @@ export async function GET(
   { params }: { params: { id: string } },
 ) {
   const user = await getUserInfo();
-  if (user == null) return Response.json(genUnAuthData());
+  // if (user == null) return Response.json(genUnAuthData());
 
   const { id } = params;
   const doc = await db.docBlog.findUnique({
-    where: { id, userId: user.id, isDeleted: false },
+    // where: { id, userId: user.id, isDeleted: false },
+    where: { id, isDeleted: false },
   });
 
   if (doc == null) {

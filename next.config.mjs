@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   webpack: (config, { dev }) => {
-    config.infrastructureLogging = { level: 'error' };
+    config.infrastructureLogging = { level: "error" };
     if (dev) {
       config.cache = false; // 禁用 dev 下的缓存
     }

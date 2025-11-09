@@ -21,12 +21,6 @@ resources:
             echo "EMAIL_PORT=${env(EMAIL_PORT)}" >> .env
             echo "EMAIL_PASSWORD=${env(EMAIL_PASSWORD)}" >> .env
             echo "NOTICE_EMAIL_TO=${env(NOTICE_EMAIL_TO)}" >> .env
-            echo "OSS_ACCESS_KEY_ID=${env(OSS_ACCESS_KEY_ID)}" >> .env
-            echo "OSS_ACCESS_KEY_SECRET=${env(OSS_ACCESS_KEY_SECRET)}" >> .env
-            echo "OSS_BUCKET=${env(OSS_BUCKET)}" >> .env
-            echo "NEXT_PUBLIC_OSS_CDN_HOSTNAME=${env(NEXT_PUBLIC_OSS_CDN_HOSTNAME)}" >> .env
-            echo "GPT_API_PROXY_ORIGIN=${env(GPT_API_PROXY_ORIGIN)}" >> .env
-            echo "GPT_API_PROXY_AUTH_TOKEN=${env(GPT_API_PROXY_AUTH_TOKEN)}" >> .env
         - run: |
             export PATH=/usr/local/versions/node/v20.8.1/bin:$PATH
             npm config set "@tiptap-pro:registry" https://registry.tiptap.dev/

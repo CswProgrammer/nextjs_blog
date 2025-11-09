@@ -1,21 +1,20 @@
+import { FileText } from "lucide-react";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { auth } from "auth";
+
 import { getDocList } from "./action";
-import Item from "./item";
+import List from "./list";
 
 export default async function Directory({
   params,
 }: {
   params: { id: string };
 }) {
-  const list = await getDocList();
+  const session = await auth();
+  const userId = session?.user?.id ?? "system"; // 兜底系统用户
 
-  return (
-    <div>
-      {list.map((doc) => {
-        const { id, title } = doc;
-        let isCurrent = false;
-        if (id === params.id) isCurrent = true;
-        return <Item key={id} id={id} title={title} isCurrent={isCurrent} />;
-      })}
-    </div>
-  );
+  const list = await getDocList();
+  console.log("Directory list:", list);
+  return <List defaultList={list} defaultParamId={params.id} />;
 }
