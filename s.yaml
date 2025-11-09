@@ -2,8 +2,8 @@ edition: 3.0.0
 name: web-framework-app
 access: 'undefined'
 vars:
-  region: 'cn-hongkong'
-  functionName: 'huashuiai-web-test'
+  region: 'ap-southeast-1'
+  functionName: 'next-hs'
 resources:
   framework:
     component: fc3
@@ -15,12 +15,15 @@ resources:
             echo "AUTH_SECRET=${env(AUTH_SECRET)}" >> .env
             echo "AUTH_GITHUB_ID=${env(AUTH_GITHUB_ID)}" >> .env
             echo "AUTH_GITHUB_SECRET=${env(AUTH_GITHUB_SECRET)}" >> .env
-            echo "NEXTAUTH_URL=${env(NEXTAUTH_URL)}" >> .env
             echo "EMAIL_FROM=${env(EMAIL_FROM)}" >> .env
             echo "EMAIL_HOST=${env(EMAIL_HOST)}" >> .env
             echo "EMAIL_PORT=${env(EMAIL_PORT)}" >> .env
             echo "EMAIL_PASSWORD=${env(EMAIL_PASSWORD)}" >> .env
+            echo "NEXTAUTH_URL=${env(NEXTAUTH_URL)}" >> .env
+            echo "NEXTAUTH_URL=${env(NEXTAUTH_URL)}" >> .env
             echo "NOTICE_EMAIL_TO=${env(NOTICE_EMAIL_TO)}" >> .env
+            echo '------------ .env ------------'
+            cat .env
         - run: |
             export PATH=/usr/local/versions/node/v20.8.1/bin:$PATH
             npm config set "@tiptap-pro:registry" https://registry.tiptap.dev/
@@ -35,7 +38,6 @@ resources:
       description: Serverless Devs Web Framework Function
       runtime: custom.debian10
       timeout: 60
-      # memorySize: 1024
       layers:
         - acs:fc:${vars.region}:official:layers/Nodejs20/versions/1
       environmentVariables:

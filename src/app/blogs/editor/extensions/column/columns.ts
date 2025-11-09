@@ -6,17 +6,6 @@ export enum ColumnLayout {
   TwoColumn = "two-column",
 }
 
-declare module "@tiptap/core" {
-  // 扩展 TS 接口属性
-  interface Commands<ReturnType> {
-    columns: {
-      setColumns: () => ReturnType;
-      setLayout: (layout: ColumnLayout) => ReturnType;
-      deleteColumns: () => ReturnType;
-    };
-  }
-}
-
 export const Columns = Node.create({
   name: "columns",
 
