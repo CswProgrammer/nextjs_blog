@@ -17,7 +17,7 @@ export default function HomeNav() {
         {["Blog", "Project", "Me"].map((label, i) => {
           const href =
             label === "Blog"
-              ? "/blogs/cf162e77-709d-40ff-97c0-eb9651b147db"
+              ? "/blogs/ca906823-59af-414b-b48c-0d2808915319"
               : `/${label.toLowerCase()}`;
           return (
             <Button

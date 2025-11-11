@@ -26,7 +26,7 @@ export default async function Home() {
           size="lg"
         >
           <Code className="h-4 w-4" />
-          &nbsp;联系本人
+          &nbsp;联系站长
         </Button>
       </section>
     </main>
@@ -39,7 +39,7 @@ async function MainButton() {
     return (
       <SignInButton className="text-base" size="lg">
         <User className="h-4 w-4" />
-        &nbsp;登录 / 注册
+        &nbsp;站长登陆
       </SignInButton>
     );
   }
