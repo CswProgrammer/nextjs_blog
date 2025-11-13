@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
-import { uploadImageAPI } from "@/components/editor/utils/api";
+import { uploadImageFn } from "@/components/editor/utils/api";
+
 import { useToast } from "@/components/ui/use-toast";
 
 const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
@@ -10,7 +11,8 @@ const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
     async (file: File) => {
       setLoading(true);
       try {
-        const url = await uploadImageAPI(); // 上传图片
+        const url = await uploadImageFn(file); // 上传图片
+
         onUpload(url); // 上传成功后，调用 onUpload 方法
       } catch (errPayload: any) {
         console.error(errPayload);

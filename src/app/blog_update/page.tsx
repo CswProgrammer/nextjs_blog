@@ -27,13 +27,14 @@ export default async function Work() {
   });
   if (count > 0) {
     // 有文档，但是都是删除状态
-    redirect(`/blog_update/0`);
+    redirect(`/blog_update/89d2b0bf-1842-4dc5-9bb4-696e7afde71b`);
     return;
   }
 
   // 找不到任何文档，则新建文档
   const newDoc = await db.docBlog.create({
     data: {
+      id: crypto.randomUUID(),
       userId: user.id,
       title: "AI blog 是什么",
       content:

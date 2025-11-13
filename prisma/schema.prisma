@@ -9,7 +9,7 @@ datasource db {
 }
 
 model DocBlog {
-  id        String    @id @default(cuid())
+  id        String    @id 
   title     String
   content   String
   category  String
@@ -17,7 +17,7 @@ model DocBlog {
   updatedAt DateTime  @updatedAt
   userId    String
   parentId  String?
-  isDeleted Boolean?
+  isDeleted Boolean @default(false)
   isStar    Boolean   @default(false)
   parent    DocBlog?  @relation("ChildrenDocs", fields: [parentId], references: [id])
   children  DocBlog[] @relation("ChildrenDocs")

@@ -7,24 +7,23 @@ import Superscript from "@tiptap/extension-superscript";
 import Highlight from "@tiptap/extension-highlight";
 import { TaskItem } from "@tiptap/extension-task-item";
 import { TaskList } from "@tiptap/extension-task-list";
-import { FileHandler } from "@tiptap-pro/extension-file-handler";
-import { SlashCommands } from "./slash-commands";
-import { Dropcursor } from "@tiptap/extension-dropcursor";
-import { Columns, Column } from "./column";
-import Document from "./document";
 import Link from "@tiptap/extension-link";
+import { FileHandler } from "@tiptap-pro/extension-file-handler";
+import { Dropcursor } from "@tiptap/extension-dropcursor";
+import { CharacterCount } from "@tiptap/extension-character-count";
+import Document from "./document";
+import { SlashCommands } from "./slash-commands";
+import { Columns, Column } from "./column";
 import ImageBlock from "./image-block";
 import { ImageUpload } from "./image-upload";
-import { uploadImageAPI } from "@/components/editor/utils/api";
+import { uploadImageFn } from "@/components/editor/utils/api";
 import { Table, TableCell, TableRow, TableHeader } from "./table/index";
 import Selection from "./selection";
-import { CharacterCount } from "@tiptap/extension-character-count";
 
 export const extensions = [
   Document,
   Columns,
   Column,
-  // 使用 StarterKit，但禁用默认的 Document 扩展，从而使用自定义的 Document 扩展
   StarterKit.configure({
     document: false,
     dropcursor: false,
@@ -48,35 +47,32 @@ export const extensions = [
   FileHandler.configure({
     allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
     onDrop: (currentEditor, files, pos) => {
-      files.forEach(async () => {
-        const url = await uploadImageAPI();
-
+      files.forEach(async (file) => {
+        const url = await uploadImageFn(file);
         currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run();
       });
     },
     onPaste: (currentEditor, files, pasteContent) => {
-      if (pasteContent)
-        return files.forEach(async () => {
-          const url = await uploadImageAPI();
-
-          return currentEditor
-            .chain()
-            .setImageBlockAt({
-              pos: currentEditor.state.selection.anchor,
-              src: url,
-            })
-            .focus()
-            .run();
-        });
+      if (pasteContent) return;
+      files.forEach(async (file) => {
+        const url = await uploadImageFn(file);
+        return currentEditor
+          .chain()
+          .setImageBlockAt({
+            pos: currentEditor.state.selection.anchor,
+            src: url,
+          })
+          .focus()
+          .run();
+      });
     },
   }),
-
   Table,
   TableCell,
   TableRow,
   TableHeader,
   Placeholder.configure({
-    placeholder: "输入 / 设置格式",
+    placeholder: "输入 / 设置格式，输入空格使用 AI",
   }),
   SlashCommands,
   Dropcursor.configure({

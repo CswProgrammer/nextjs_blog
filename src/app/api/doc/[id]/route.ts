@@ -41,7 +41,8 @@ export async function PATCH(
 
   try {
     await db.docBlog.update({
-      where: { id, userId: user.id, isDeleted: false },
+      where: { id },
+      // where: { id, userId: user.id, isDeleted: false },
 
       data: body,
     });
