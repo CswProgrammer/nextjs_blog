@@ -96,7 +96,7 @@ export default function Item(props: IProps) {
 
         {/* 操作按钮 */}
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
-          <ItemHandlers id={id} isStar={isStar} />
+          {/* <ItemHandlers id={id} isStar={isStar} /> */}
         </div>
       </div>
 
