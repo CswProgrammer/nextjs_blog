@@ -35,6 +35,7 @@ const useDropZone = ({ uploader }: { uploader: (file: File) => void }) => {
         return;
       }
 
+      //添加oss变量
       e.preventDefault();
 
       const file = filteredFiles[0];

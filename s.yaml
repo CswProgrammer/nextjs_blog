@@ -1,9 +1,9 @@
 edition: 3.0.0
 name: web-framework-app
-access: "undefined"
+access: 'undefined'
 vars:
-  region: "ap-southeast-1"
-  functionName: "next-hs"
+  region: 'ap-southeast-1'
+  functionName: 'next-hs'
 resources:
   framework:
     component: fc3
@@ -22,6 +22,8 @@ resources:
             echo "NEXTAUTH_URL=${env(NEXTAUTH_URL)}" >> .env
             echo "NEXTAUTH_URL=${env(NEXTAUTH_URL)}" >> .env
             echo "NOTICE_EMAIL_TO=${env(NOTICE_EMAIL_TO)}" >> .env
+            echo "OSS_ACCESS_KEY_ID=${env(OSS_ACCESS_KEY_ID)}" >> .env
+            echo "OSS_ACCESS_KEY_SECRET=${env(OSS_ACCESS_KEY_SECRET)}" >> .env
             echo '------------ .env ------------'
             cat .env
         - run: |
