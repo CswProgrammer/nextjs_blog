@@ -15,7 +15,7 @@ import Document from "./document";
 import Link from "@tiptap/extension-link";
 import ImageBlock from "./image-block";
 import { ImageUpload } from "./image-upload";
-import { uploadImageAPI } from "@/components/editor/utils/api";
+import { uploadImageFn } from "@/components/editor/utils/api";
 import { Table, TableCell, TableRow, TableHeader } from "./table/index";
 import Selection from "./selection";
 import { CharacterCount } from "@tiptap/extension-character-count";
@@ -48,16 +48,16 @@ export const extensions = [
   FileHandler.configure({
     allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
     onDrop: (currentEditor, files, pos) => {
-      files.forEach(async () => {
-        const url = await uploadImageAPI();
+      files.forEach(async (file) => {
+        const url = await uploadImageFn(file);
 
         currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run();
       });
     },
     onPaste: (currentEditor, files, pasteContent) => {
       if (pasteContent)
-        return files.forEach(async () => {
-          const url = await uploadImageAPI();
+        files.forEach(async (file) => {
+          const url = await uploadImageFn(file);
 
           return currentEditor
             .chain()
